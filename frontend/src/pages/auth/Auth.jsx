@@ -43,10 +43,10 @@ const Auth = () => {
             <div className="main">
                 {/* SignUp Form */}
                 <div className={`signup ${!isLogin && "active"}`}>
+                    <label htmlFor="chk" aria-hidden="true" onClick={() => setIsLogin(false)}>
+                        Sign up
+                    </label>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="chk" aria-hidden="true" onClick={() => setIsLogin(false)}>
-                            Sign up
-                        </label>
                         <input
                             type="text"
                             name="fullName"
@@ -134,10 +134,10 @@ const Auth = () => {
 
                 {/* Login Form */}
                 <div className={`login ${isLogin && "active"}`}>
+                    <label className="login-header" htmlFor="chk" aria-hidden="true" onClick={() => setIsLogin(true)}>
+                        Login
+                    </label>
                     <form>
-                        <label htmlFor="chk" aria-hidden="true" onClick={() => setIsLogin(true)}>
-                            Login
-                        </label>
                         <input
                             type="email"
                             name="email"
