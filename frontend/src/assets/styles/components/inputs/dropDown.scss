@@ -1,0 +1,104 @@
+.dropdown-container {
+  width: 104px;
+  height: 30px;
+  position: relative;
+  box-shadow: var(--shadow-main);
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  justify-content: space-between;
+  padding: 10px;
+  pointer-events: all;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--selected-text-gray);
+  font-size: var(--font-size-small);
+}
+
+.dropdown-menu {
+  user-select: none;
+  width: 237px;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: var(--shadow-main);
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 2px;
+  overflow-y: auto;
+  top: 110%;
+  left: 50%;
+  transform: translate(-21%, 0);
+  // padding: 10px 0;
+  // padding-top: 0;
+
+  .dropDown-header {
+    border-bottom: 1px solid var(--border-color-20);
+    height: 40px;
+    padding: 0 17px;
+  }
+
+  .dropdown-menu {
+    user-select: none;
+    width: 237px;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: var(var(--shadow-main));
+    border-radius: 4px;
+    z-index: 1000;
+    margin-top: 2px;
+    overflow-y: auto;
+    top: 110%;
+    left: 50%;
+    transform: translate(-21%, 0);
+    // padding: 10px 0;
+    // padding-top: 0;
+
+    .dropDown-header {
+      border-bottom: 1px solid var(--border-color-20);
+      height: 40px;
+      padding: 0 17px;
+    }
+  }
+  .selected {
+    path{
+      stroke: var(--primary-color);
+      fill: transparent;
+      stroke-width: 2px;
+      &:last-child{
+        stroke-width: 1px;
+      }
+    }
+    .left {
+      color: var(--primary-color);
+      input[type=checkbox]{
+        
+      }
+    }
+  }
+  .dropdown-option {
+    padding: 10px 0;
+    cursor: pointer;
+    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 17px;
+
+    .right {
+      .icons {
+        width: 14px;
+        height: 14px;
+      }
+    }
+    &:hover {
+      background-color: var(--highlight-light-color);
+    }
+  }
+
+  li {
+    list-style: none;
+  }
+}

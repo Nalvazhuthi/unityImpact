@@ -1,0 +1,128 @@
+// .content-container {
+//   height: calc(100vh - 82px);
+//   height: 100%;
+//   margin-top: 6px;
+// }
+
+.switches {
+  width: 100%;
+  height: 100%;
+  min-width: 100px;
+  flex-direction: column;
+  align-items: baseline;
+  // position: fixed;
+  // top: 0;
+}
+
+.switch-tools {
+  position: absolute;
+  width: 100%;
+  gap: 20px;
+  padding: 20px;
+
+  .project_toolbar-left {
+    gap: 16px;
+  }
+}
+
+.toggle-container {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  user-select: none;
+}
+
+.toggle-switch {
+  // min-width: 80px;
+
+  height: 30px;
+  box-shadow: 0px 2px 10px 0px #0000001c;
+
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  // display: flex;
+  // align-items: center;
+  // justify-content: space-between;
+  padding: 0;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+}
+
+.toggle-switch.am {
+  background-color: #ffffff;
+  /* AM - blue */
+  // margin: 0px 10px;
+
+  /* background:red; */
+}
+
+.toggle-switch.pm {
+  background-color: #ffffff;
+  /* PM - orange */
+}
+
+.am-label,
+.pm-label {
+  color: $selected-text-gray;
+  font-size: 12px;
+  width: 50%;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  padding: 5px 10px;
+  /* Ensure labels stay above the knob */
+}
+
+.toggle-knob {
+  width: 50%;
+  height: 100%;
+  background-color: $button-action-color;
+  border-radius: 8px;
+  position: absolute;
+  transition: transform 0.3s ease;
+  z-index: 1;
+  /* Ensure knob is under the labels */
+}
+
+.toggle-switch.pm .toggle-knob {
+  transform: translateX(100%);
+}
+
+.upload {
+  height: 30px;
+  background-color: $primary-color;
+  position: relative;
+  /* Necessary for absolute positioning */
+}
+
+.upload input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  /* Show a pointer cursor on hover */
+}
+
+.upload span {
+  z-index: 1;
+  /* Ensure the text is above the file input */
+}
+
+.upload .UploadIcon {
+  display: none;
+  /* Hide the UploadIcon component */
+}
+
+/* Optional: Additional styling for better appearance */
+.upload {
+  padding: 10px 20px;
+  border-radius: 8px;
+  /* Rounded corners */
+}
+
+.upload:hover {
+  background-color: #e0e0e0;
+  /* Change background color on hover */
+}

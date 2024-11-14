@@ -1,0 +1,46 @@
+.undoRedo {
+  background-color: var(--primary-color);
+  box-shadow: var(--shadow-main);
+  height: 30px;
+  border-radius: 10px;
+  position: relative;
+  justify-content: space-around;
+  pointer-events: all;
+  gap: 0 !important;
+  overflow: hidden;
+}
+
+.split {
+  height: 50%;
+  width: 2px;
+  background: var(--lite-gray-40);
+}
+
+.icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 100%;
+  padding: 6px;
+}
+.icon svg {
+  scale: 0.8;
+}
+.icon:hover {
+  background-color: var(--button-hover-color);
+}
+.icon:hover path {
+  fill: var(--secondary-color);
+  stroke: var(--secondary-color);
+  stroke-width: 0.5px;
+}
+.icon::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 20px;
+  left: calc(50% - 0.5px);
+  top: 50%;
+  transform: translateY(-50%);
+}/*# sourceMappingURL=undoRedo.css.map */

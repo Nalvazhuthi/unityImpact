@@ -1,0 +1,249 @@
+.object-header {
+    width: 100%;
+
+    .head {
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    .active {
+        border-bottom: 1px solid $secondary-color;
+    }
+}
+
+
+.object-wrapper {
+    .basic-properties {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+
+        .transform,
+        .easing-container,
+        .time-management,
+        .state-management,
+        .basic-properties {
+            width: 100%;
+            border-bottom: 1px solid $border-color-20;
+            padding-bottom: 18px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+
+            .icons {
+                cursor: pointer;
+            }
+        }
+
+        // Time Management & Global Properties
+        .time-management,
+        .global-properties {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+
+            .icons {
+                transition: transform 0.3s ease;
+            }
+
+            .icons.rotate {
+                transform: rotate(90deg);
+            }
+
+            .data-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                .data {
+                    display: flex;
+
+                    .left {
+                        width: 100px;
+
+                        input {
+                            width: 100%;
+                            text-align: center;
+                        }
+                    }
+                }
+
+
+            }
+
+
+
+            // .format-section {
+            //     .data-wrapper {
+            //         .data {
+            //             display: flex;
+            //             flex-direction: column;
+            //             align-items: flex-start;
+
+            //             .header {
+            //                 border: none;
+            //             }
+
+            //             .input-wrapper {
+            //                 display: flex;
+            //                 gap: 5px;
+
+            //                 .input-group {
+            //                     display: flex;
+            //                     align-items: center;
+
+            //                     .data {
+            //                         flex-direction: row;
+            //                         align-items: center;
+
+            //                         .left {
+            //                             height: 26px;
+            //                             position: relative;
+            //                             width: 51px;
+            //                             border: 1px solid $highlight-light-color;
+            //                             border-radius: 6px;
+
+            //                             input {
+            //                                 width: 100%;
+            //                                 height: 100%;
+            //                                 position: absolute;
+            //                             }
+
+            //                             .icon {
+            //                                 position: relative;
+            //                                 z-index: 100;
+
+            //                                 &:hover {
+            //                                     background: none;
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+        }
+
+
+        .easing-container {
+            .easing-header {
+                width: 100%;
+            }
+
+            .left {
+
+                width: 100%;
+            }
+        }
+
+
+        .state-management-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .data-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+
+                .data {
+                    padding: 4px;
+                }
+
+                .selected {
+                    background-color: #E5ECFA !important;
+
+                    .key {
+                        color: #5C87DF;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+
+        .header {
+            border: none;
+        }
+
+        .icons {
+
+            transition: all linear 0.2s;
+        }
+
+        .rotate {
+            transform: rotate(90deg);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+// Dropdown Styles
+.regularDropdown-container {
+    width: 104px;
+    height: 22px;
+    border: 1px solid $border-color; // Ensure $border-color is defined
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+
+    .dropdown-header {
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+        padding: 5px;
+        border: 1px solid $highlight-light-color;
+        border-radius: 6px;
+        background-color: $primary-color;
+
+        .icon {
+            position: absolute;
+            right: 0;
+            padding: 3px;
+        }
+    }
+
+    .dropdown-options {
+        position: absolute; // Ensure dropdown options position correctly
+        width: 100%; // Ensure options width matches the header
+        background-color: $primary-color; // Optional: Background color
+        border: 1px solid #ccc; // Optional: Border styling
+        border-radius: 4px; // Optional: Border radius
+        z-index: 10; // Ensure dropdown appears above other elements
+        max-height: 200px; // Optional: Limit height
+        overflow-y: auto; // Optional: Enable scrolling if content exceeds height
+
+        .option {
+            padding: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $highlight-light-color; // Optional: Hover effect
+            }
+        }
+    }
+
+    .icon {
+        height: auto;
+    }
+}
+
+
+
+.icon {
+    cursor: pointer;
+}

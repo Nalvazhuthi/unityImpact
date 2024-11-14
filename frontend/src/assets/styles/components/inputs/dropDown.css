@@ -1,0 +1,92 @@
+.dropdown-container {
+  width: 104px;
+  height: 30px;
+  position: relative;
+  box-shadow: var(--shadow-main);
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  justify-content: space-between;
+  padding: 10px;
+  pointer-events: all;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--selected-text-gray);
+  font-size: var(--font-size-small);
+}
+
+.dropdown-menu {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  width: 237px;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: var(--shadow-main);
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 2px;
+  overflow-y: auto;
+  top: 110%;
+  left: 50%;
+  transform: translate(-21%, 0);
+}
+.dropdown-menu .dropDown-header {
+  border-bottom: 1px solid var(--border-color-20);
+  height: 40px;
+  padding: 0 17px;
+}
+.dropdown-menu .dropdown-menu {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  width: 237px;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: var(var(--shadow-main));
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 2px;
+  overflow-y: auto;
+  top: 110%;
+  left: 50%;
+  transform: translate(-21%, 0);
+}
+.dropdown-menu .dropdown-menu .dropDown-header {
+  border-bottom: 1px solid var(--border-color-20);
+  height: 40px;
+  padding: 0 17px;
+}
+.dropdown-menu .selected path {
+  stroke: var(--primary-color);
+  fill: transparent;
+  stroke-width: 2px;
+}
+.dropdown-menu .selected path:last-child {
+  stroke-width: 1px;
+}
+.dropdown-menu .selected .left {
+  color: var(--primary-color);
+}
+.dropdown-menu .dropdown-option {
+  padding: 10px 0;
+  cursor: pointer;
+  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 17px;
+}
+.dropdown-menu .dropdown-option .right .icons {
+  width: 14px;
+  height: 14px;
+}
+.dropdown-menu .dropdown-option:hover {
+  background-color: var(--highlight-light-color);
+}
+.dropdown-menu li {
+  list-style: none;
+}/*# sourceMappingURL=dropDown.css.map */

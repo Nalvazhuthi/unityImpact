@@ -1,0 +1,23 @@
+// text buttons
+
+.button,
+button {
+  border: none;
+  outline: none;
+  background-color: var(--button-action-color);
+  color: var(--primary-color);
+  border-radius: 6px;
+  padding: 6px 15px;
+  box-shadow: var(--shadow-main);
+  cursor: pointer;
+}
+
+// icon buttons
+
+.tools {
+  width: 28.8px;
+  height: 28.8px;
+  border-radius: 7.01px;
+  background-color: var(--primary-color);
+  box-shadow: 0px 1.92px 9.6px 0px #0000001c;
+}

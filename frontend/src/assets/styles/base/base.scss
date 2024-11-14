@@ -1,0 +1,79 @@
+@import "../abstracts/variables";
+
+[data-theme="light"] {
+  --primary-color: #{$primary-color};
+  --text-gray: #{$text-gray};
+  --selected-text-gray: #{$selected-text-gray};
+  --button-action-color: #{$button-action-color};
+  --button-abort-color: #{$button-abort-color};
+  --secondary-color: #{$secondary-color};
+  --accent-color: #{$accent-color};
+  --lite-gray-40: #{$lite-gray-40};
+  --lite-gray-80: #{$lite-gray-80};
+  --border-color: #{$border-color};
+  --border-color-20: #{$border-color-20};
+  --highlight-light-color: #{$highlight-light-color};
+  --button-hover-color: #{$button-hover-color};
+
+  //shadow variables
+  --shadow-main: #{$shadow-main};
+
+  //icon colors
+  --icon-idle-color: #{$icon-idle-color};
+
+}
+
+[data-theme="dark"] {
+  --primary-color: #{$primary-color};
+  --text-gray: #{$text-gray};
+  --selected-text-gray: #{$selected-text-gray};
+  --button-action-color: #{$button-action-color};
+  --button-abort-color: #{$button-abort-color};
+  --secondary-color: #{$secondary-color};
+  --accent-color: #{$accent-color};
+  --lite-gray-40: #{$lite-gray-40};
+  --lite-gray-80: #{$lite-gray-80};
+  --border-color: #{$border-color};
+  --border-color-20: #{$border-color-20};
+  --highlight-light-color: #{$highlight-light-color};
+
+  //shadow variables
+  --shadow-main: #{$shadow-main};
+}
+
+#root,
+.content-container {
+  // height: 100vh;
+  width: 100%;
+  display: flex;
+  // overflow: hidden;
+}
+
+#root-over {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+
+
+input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border: 1px solid gray;
+  padding: 5px 10px;
+  background: transparent;
+  border-radius: 3px;
+  background-color: #fff !important;
+}
+
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #5F19FD;
+  color: $primary-color;
+  font-size: 12px;
+}
+
+.content-container {}

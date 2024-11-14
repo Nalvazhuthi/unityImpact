@@ -1,0 +1,174 @@
+.object-wrapper {
+  width: 100%;
+  // padding-top: 8px;
+  flex-direction: column;
+  gap: 10px;
+
+  .sub-header {
+    width: 100%;
+  }
+
+
+  .objectInput-wrapper,
+  .checkBox,
+  .editData {
+    border-bottom: 1px solid var(--border-color-20);
+  }
+
+  .head {
+    font-size: var(--font-size-title);
+    color: var(--lite-gray-80);
+  }
+
+
+
+
+
+
+  .userDatas {
+    width: 100%;
+    // padding-bottom: 15px;
+
+    .sub-header {
+      padding-bottom: 16px;
+
+      .add {
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    .data-wrapper {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+
+      .data {
+        width: 100%;
+      }
+
+      .left {
+        gap: 10px;
+
+        input {
+          width: 110px;
+          height: 18px;
+          border: 1px solid var(--highlight-light-color);
+        }
+
+        .close-button {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .editData {
+    width: 100%;
+    border: 1px solid var(--highlight-light-color);
+    border-radius: 6px;
+    padding: 10px;
+
+    .sub-header {
+      padding-bottom: 10px;
+    }
+
+    .editData-wrapper {
+      flex-direction: column;
+      align-items: start;
+      gap: 10px;
+      .edit-data-list {
+        width: 100%;
+      }
+
+      .minMax {
+        gap: 6px;
+        input {
+          width: 58px;
+        }
+      }
+      table {
+        width: 100%;
+        border-spacing: 0 10px;
+      }
+
+      .key {
+        text-align: left;
+        padding: 0 8px;
+      }
+
+      input.full-width {
+        width: 100px;
+        box-sizing: border-box;
+      }
+
+      input.max-width {
+        width: 58px;
+      }
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      gap: 20px;
+      padding-top: 20px;
+
+      button {
+        padding: 5px 19px;
+      }
+      .cancel {
+        background-color: var(--button-abort-color);
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+
+// Position,Scale,Rotation style
+
+
+.checkBox,
+.objectInput-wrapper {
+  padding-top: 0px;
+  padding-bottom: 15px;
+  // border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  gap: 15px;
+
+  .objectInput-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .label {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .objectInputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .object-input {
+
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .value {
+        width: 36px;
+
+        input {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
