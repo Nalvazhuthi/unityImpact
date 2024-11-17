@@ -1,0 +1,303 @@
+$sidebar-bg-color: #f4f4f9;
+$card-bg-color: #ffffff;
+$hover-color: #007bff;
+$logout-bg-color: #d9534f;
+$logout-hover-bg-color: #c9302c;
+$text-color: #333;
+$subtext-color: #666;
+
+.sideBar-container {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  background-color: $sidebar-bg-color;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  height: 100vh;
+  .userDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .details {
+      text-align: center;
+    }
+
+    .fullName {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    .email {
+      font-size: 14px;
+      color: $subtext-color;
+    }
+
+    .type {
+      font-size: 12px;
+      color: #888;
+    }
+  }
+
+  .navigations {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    nav {
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      color: $text-color;
+      cursor: pointer;
+      padding: 10px 0;
+      border-radius: 10px;
+      &:hover {
+        color: $hover-color;
+
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .nearByRelatedOrganisation {
+    margin-top: 20px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .entity-info-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .entity-info {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: $card-bg-color;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        img {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          border-radius: 50%;
+          margin-right: 15px;
+        }
+
+        .entity-details {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          // flex-grow: 1;
+          width: 120px;
+
+          .entity-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: $text-color;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .entity-email,
+          .entity-location {
+            font-size: 14px;
+            color: $subtext-color;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+  .logout {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: $logout-bg-color;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background-color: $logout-hover-bg-color;
+    }
+  }
+}
+
+
+
+
+// Variables for colors and styling
+$sidebar-bg-color: #f4f4f9;
+$card-bg-color: #ffffff;
+$hover-color: #007bff;
+$logout-bg-color: #d9534f;
+$logout-hover-bg-color: #c9302c;
+$text-color: #333;
+$subtext-color: #666;
+$button-bg-color: #28a745;
+$button-hover-bg-color: #218838;
+
+// Main container for sidebar
+.RequestSidebar {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  background-color: $sidebar-bg-color;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  height: 100vh;
+  overflow-y: auto;
+  
+  .profile-img{
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: $text-color;
+    margin-bottom: 10px;
+  }
+
+  .entity-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  // Style for each entity card
+  .entity-info {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: $card-bg-color;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    gap: 15px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .entity-details {
+      display: flex;
+      flex-direction: column;
+      width: 160px;
+
+      .entity-name {
+        font-size: 16px;
+        font-weight: bold;
+        color: $text-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .entity-type {
+        font-size: 14px;
+        color: $subtext-color;
+      }
+    }
+
+    .button-container {
+      margin-left: auto;
+
+      button {
+        background-color: $button-bg-color;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: $button-hover-bg-color;
+        }
+      }
+    }
+  }
+
+  .received-invite {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .invite-card {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      background-color: $card-bg-color;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+      .invite-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 180px;
+
+        .organization-name {
+          font-size: 16px;
+          font-weight: bold;
+          color: $text-color;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+
+        button {
+          background-color: $button-bg-color;
+          color: white;
+          padding: 6px 12px;
+          border: none;
+          border-radius: 5px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: $button-hover-bg-color;
+          }
+        }
+      }
+    }
+  }
+}
+

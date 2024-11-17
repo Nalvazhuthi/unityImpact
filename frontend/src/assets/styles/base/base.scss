@@ -20,7 +20,6 @@
 
   //icon colors
   --icon-idle-color: #{$icon-idle-color};
-
 }
 
 [data-theme="dark"] {
@@ -43,10 +42,16 @@
 
 #root,
 .content-container {
-  // height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
+  justify-content: space-between !important;
   // overflow: hidden;
+  .dashboard{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 #root-over {
@@ -55,7 +60,6 @@
   left: 0;
   z-index: 99;
 }
-
 
 input {
   width: 100%;
@@ -68,12 +72,12 @@ input {
   background-color: #fff !important;
 }
 
-
 button[type="submit"] {
   width: 100%;
-  background-color: #5F19FD;
+  background-color: #5f19fd;
   color: $primary-color;
   font-size: 12px;
 }
 
-.content-container {}
+.content-container {
+}

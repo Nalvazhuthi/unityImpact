@@ -34,8 +34,10 @@
 
 #root,
 .content-container {
+  height: 100%;
   width: 100%;
   display: flex;
+  justify-content: space-between !important;
 }
 
 #root-over {
@@ -58,7 +60,7 @@ input {
 
 button[type=submit] {
   width: 100%;
-  background-color: #5F19FD;
+  background-color: #5f19fd;
   color: #EDF2F6;
   font-size: 12px;
 }/*# sourceMappingURL=base.css.map */

@@ -1,19 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Auth = () => {
+const Auth = ({setIsAuthenticated}) => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
   const [formData, setFormData] = useState({
-    fullName: "", // Only used for signup
+    fullName: "",
     email: "",
     password: "",
-    type: "", // Only used for signup
-    location: "", // Only used for signup
+    type: "",
+    location: "", // Location will be formatted as "latitude, longitude"
   });
 
-  const [errorMessage, setErrorMessage] = useState(""); // For error messages
-  const [successMessage, setSuccessMessage] = useState(""); // For success messages
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Get current location
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prevData) => ({
+            ...prevData,
+            location: `${latitude}, ${longitude}`,
+          }));
+        },
+        () => {
+          setErrorMessage("Unable to retrieve location.");
+        }
+      );
+    } else {
+      setErrorMessage("Geolocation is not supported by this browser.");
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,39 +45,34 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Reset error and success messages on each form submission
     setErrorMessage("");
     setSuccessMessage("");
 
     const { fullName, email, password, type, location } = formData;
 
-    // Validate the form data (client-side)
     if (isLogin) {
-      // For login, we need only email and password
       if (!email || !password) {
         setErrorMessage("Email and password are required.");
         return;
       }
     } else {
-      // For signup, all fields are required
       if (!fullName || !email || !password || !type || !location) {
         setErrorMessage("All fields are required.");
         return;
       }
     }
 
-    // Determine the API URL based on login or signup
     let url = isLogin
-      ? "http://localhost:4100/auth/login" // Login endpoint
-      : "http://localhost:4100/auth/signup"; // Signup endpoint
+      ? "http://localhost:4100/auth/login"
+      : "http://localhost:4100/auth/signup";
 
-    // Prepare the payload based on whether it's login or signup
+    // Split location string into latitude and longitude
+    const [latitude, longitude] = location.split(",").map(Number);
+
     const payload = isLogin
       ? { email, password }
-      : { fullName, email, password, type, location };
+      : { fullName, email, password, type, location: { latitude, longitude } };
 
-    // Making a POST request to either login or signup API
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -65,23 +80,23 @@ const Auth = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include cookies for authentication
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Show success message if login/signup is successful
         setSuccessMessage(data.message || "Operation successful!");
+
+        // Store user data in localStorage if login/signup is successful
         if (isLogin) {
-          // On successful login, maybe redirect to another page or set user data
-          // For now, we'll assume you want to handle user login state here.
-          console.log("Logged in successfully");
+          localStorage.setItem("userData", JSON.stringify(data.user)); // Save user data in localStorage
           navigate("/home");
+          setIsAuthenticated(true);
         } else {
           setIsLogin(true); // Switch to login after successful signup
         }
       } else {
-        // Show error message if login/signup fails
         setErrorMessage(data.error || "An error occurred. Please try again.");
       }
     } catch (error) {
@@ -106,7 +121,7 @@ const Auth = () => {
             <input
               type="text"
               name="fullName"
-              placeholder="Full Name"
+              placeholder="User / Organisation Name"
               value={formData.fullName}
               onChange={handleInputChange}
               required={!isLogin} // Only required in signup
@@ -129,15 +144,20 @@ const Auth = () => {
             />
             {!isLogin && (
               <>
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  required
-                />
-                {/* Account Type - Radio buttons */}
+                <div className="location-wrapper">
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="Location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    required
+                    readOnly
+                  />
+                  <button type="button" onClick={getCurrentLocation}>
+                    Use Current Location
+                  </button>
+                </div>
                 <div className="account-type">
                   <label>Account Type:</label>
                   <div className="radio-wrapper">
@@ -184,7 +204,6 @@ const Auth = () => {
             <button type="submit">{isLogin ? "Sign in" : "Sign up"}</button>
           </form>
 
-          {/* Error or Success Messages */}
           {errorMessage && <div className="error">{errorMessage}</div>}
           {successMessage && <div className="success">{successMessage}</div>}
         </div>
@@ -207,7 +226,6 @@ const Auth = () => {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="input-field"
             />
             <input
               type="password"
@@ -216,15 +234,11 @@ const Auth = () => {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="input-field"
             />
-            <button type="submit" className="btn">
-              Sign in
-            </button>
+            <button type="submit">Sign in</button>
           </form>
 
-          {/* Error message */}
-          <div className="error">Error message here</div>
+          {errorMessage && <div className="error">{errorMessage}</div>}
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";  // You'll need to install jsonwebtoken (npm install jsonwebtoken)
+import jwt from "jsonwebtoken"; // You'll need to install jsonwebtoken (npm install jsonwebtoken)
 import User from "../models/signupModels/User.js";
+import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie .js";
 
 export let signup = async (req, res) => {
   const { fullName, email, password, type, location } = req.body;
@@ -33,7 +34,10 @@ export let signup = async (req, res) => {
     email,
     password: hashedPassword,
     type,
-    location,
+    location: {
+      type: "Point", // GeoJSON type
+      coordinates: [location.longitude, location.latitude], // [longitude, latitude]
+    },
   });
 
   try {
@@ -42,7 +46,9 @@ export let signup = async (req, res) => {
     return res.status(201).json({ message: "User created successfully!" });
   } catch (error) {
     console.error("Error creating user:", error);
-    return res.status(500).json({ error: "Server error, please try again later" });
+    return res
+      .status(500)
+      .json({ error: "Server error, please try again later" });
   }
 };
 
@@ -67,17 +73,43 @@ export let login = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Create a JWT token
-    const payload = { userId: user._id, email: user.email, type: user.type };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }); // 1 hour expiration
-
     // Send the token in the response
+    generateTokenAndSetCookie(user._id, res);
+
     return res.status(200).json({
       message: "Login successful",
-      token: token,  // Send the JWT token to the client
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ error: "Server error, please try again later" });
+    return res
+      .status(500)
+      .json({ error: "Server error, please try again later" });
+  }
+};
+
+export let logout = async (req, res) => {
+  try {
+    // Clear the JWT token cookie
+    res.cookie("jwt", "", {
+      maxAge: 0,
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    // Send a successful logout message
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(400).json({ error: "Logout error" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in getMe controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
