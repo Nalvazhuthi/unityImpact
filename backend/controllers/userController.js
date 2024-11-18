@@ -1,5 +1,6 @@
 import Invite from "../models/Invite.js";
 import User from "../models/signupModels/User.js";
+import bcrypt from "bcryptjs";
 
 export const nearByEntities = async (req, res) => {
   try {
@@ -171,3 +172,84 @@ export const sendOrCancelInvite = async (req, res) => {
     return res.status(500).json({ error: "Failed to process invitation" });
   }
 };
+
+export const edituserData = async (req, res) => {
+  try {
+    const {
+      fullName,
+      bio,
+      email,
+      location,
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      profileImage, // Accept profileImage field
+    } = req.body;
+
+    // Find the user
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update fields if provided
+    if (fullName) user.fullName = fullName;
+    if (bio) user.bio = bio;
+    if (email) user.email = email;
+    if (profileImage) user.profileImage = profileImage; // Save the Base64 string
+
+    if (location) {
+      if (
+        location.type !== "Point" ||
+        !Array.isArray(location.coordinates) ||
+        location.coordinates.length !== 2
+      ) {
+        return res.status(400).json({
+          message: "Location must be in the correct format",
+        });
+      }
+      user.location = location;
+    }
+
+    // Handle password change logic
+    if (currentPassword && newPassword && confirmPassword) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ message: "Current password is incorrect" });
+      }
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+      if (newPassword.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedNewPassword;
+    }
+
+    // Save the updated user data
+    await user.save();
+
+    // Return a success response
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        fullName: user.fullName,
+        bio: user.bio,
+        email: user.email,
+        location: user.location,
+        profileImage: user.profileImage, // Return the updated profileImage
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// routes.put("/edituserData", protectRoute, edituserData);

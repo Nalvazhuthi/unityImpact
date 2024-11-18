@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"; // Import toast for notifications
 
-const Auth = ({setIsAuthenticated}) => {
+const Auth = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
   const [formData, setFormData] = useState({
@@ -11,9 +12,6 @@ const Auth = ({setIsAuthenticated}) => {
     type: "",
     location: "", // Location will be formatted as "latitude, longitude"
   });
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   // Get current location
   const getCurrentLocation = () => {
@@ -27,11 +25,11 @@ const Auth = ({setIsAuthenticated}) => {
           }));
         },
         () => {
-          setErrorMessage("Unable to retrieve location.");
+          toast.error("Unable to retrieve location."); // Show error toast
         }
       );
     } else {
-      setErrorMessage("Geolocation is not supported by this browser.");
+      toast.error("Geolocation is not supported by this browser."); // Show error toast
     }
   };
 
@@ -45,19 +43,17 @@ const Auth = ({setIsAuthenticated}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
 
     const { fullName, email, password, type, location } = formData;
 
     if (isLogin) {
       if (!email || !password) {
-        setErrorMessage("Email and password are required.");
+        toast.error("Email and password are required.");
         return;
       }
     } else {
       if (!fullName || !email || !password || !type || !location) {
-        setErrorMessage("All fields are required.");
+        toast.error("All fields are required.");
         return;
       }
     }
@@ -86,22 +82,23 @@ const Auth = ({setIsAuthenticated}) => {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(data.message || "Operation successful!");
+        toast.success(data.message || "Operation successful!"); // Show success toast
 
         // Store user data in localStorage if login/signup is successful
         if (isLogin) {
           localStorage.setItem("userData", JSON.stringify(data.user)); // Save user data in localStorage
           navigate("/home");
+
           setIsAuthenticated(true);
         } else {
           setIsLogin(true); // Switch to login after successful signup
         }
       } else {
-        setErrorMessage(data.error || "An error occurred. Please try again.");
+        toast.error(data.error || "An error occurred. Please try again."); // Show error toast
       }
     } catch (error) {
       console.error("Error:", error);
-      setErrorMessage("Server error. Please try again later.");
+      toast.error("Server error. Please try again later."); // Show error toast
     }
   };
 
@@ -203,9 +200,6 @@ const Auth = ({setIsAuthenticated}) => {
             )}
             <button type="submit">{isLogin ? "Sign in" : "Sign up"}</button>
           </form>
-
-          {errorMessage && <div className="error">{errorMessage}</div>}
-          {successMessage && <div className="success">{successMessage}</div>}
         </div>
 
         {/* Login Form */}
@@ -237,8 +231,6 @@ const Auth = ({setIsAuthenticated}) => {
             />
             <button type="submit">Sign in</button>
           </form>
-
-          {errorMessage && <div className="error">{errorMessage}</div>}
         </div>
       </div>
     </div>

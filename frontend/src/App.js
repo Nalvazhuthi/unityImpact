@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Auth from "./pages/auth/Auth"; // Import Auth component
 import Dashboard from "./pages/Dashboard"; // Import Dashboard component
 import "./assets/styles/main.scss"; // Import global styles from SCSS
+import { Toaster } from "react-hot-toast";
 
 // Create a QueryClient instance
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ function App() {
             />
           </Routes>
         </div>
+        <Toaster />
       </Router>
     </QueryClientProvider>
   );

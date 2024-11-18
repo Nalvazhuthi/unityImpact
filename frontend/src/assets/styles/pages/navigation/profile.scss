@@ -1,0 +1,173 @@
+// Variables for profile styling (reusing existing ones)
+$profile-bg-color: #f4f4f9;
+$profile-card-bg-color: #ffffff;
+$profile-hover-color: #007bff;
+$profile-text-color: #333;
+$profile-subtext-color: #666;
+$profile-border-radius: 10px;
+$profile-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+$profile-height: 100vh; // Full height of the viewport
+
+.profile-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: $profile-height; // Make sure it covers the full height of the viewport
+    margin: 0 auto;
+    background-color: $profile-bg-color;
+    padding: 20px;
+    border-radius: $profile-border-radius;
+    box-shadow: $profile-card-shadow;
+
+    .profile-header {
+        flex-direction: column;
+        margin-bottom: 20px;
+        gap: 20px;
+
+        .image-container {
+            width: 100px;
+            height: 100px;
+            // border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+
+            .edit-image-button {
+                position: absolute;
+                top: -25px;
+                right: -25px;
+                z-index: 10;
+                margin: 0;
+
+                .edit-button {
+                    padding: 15px;
+                    margin: 0;
+                    height: auto;
+                    // background-color: transparent;
+                    color: #fff;
+                    // background-color: #007bff;
+
+                }
+            }
+
+            label {
+                margin: 0;
+            }
+
+            .profile-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+
+            .placeholder-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                background-color: #e4e4e4;
+                border-radius: 50%;
+                color: $profile-subtext-color;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+
+        .details {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            .name {
+                font-size: 22px;
+                font-weight: bold;
+                color: $profile-text-color;
+                margin-bottom: 8px;
+            }
+
+            .email {
+                font-size: 16px;
+                color: $profile-subtext-color;
+                margin-bottom: 4px;
+                word-break: break-word;
+            }
+        }
+    }
+
+    .bio-container {
+        margin-bottom: 20px;
+        flex-direction: column;
+
+        .bio-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: $profile-text-color;
+            margin-bottom: 10px;
+        }
+
+        .bio {
+            font-size: 14px;
+            color: $profile-subtext-color;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+    }
+
+    .location-container {
+        margin-bottom: 20px;
+
+        .location {
+            font-size: 14px;
+            color: $profile-subtext-color;
+            line-height: 1.5;
+        }
+    }
+
+    // New section for additional content (e.g., recent activities, settings, etc.)
+    .additional-content {
+        margin-bottom: 20px;
+        background-color: $profile-card-bg-color;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        h4 {
+            font-size: 18px;
+            font-weight: bold;
+            color: $profile-text-color;
+            margin-bottom: 10px;
+        }
+
+        .content-text {
+            font-size: 14px;
+            color: $profile-subtext-color;
+            line-height: 1.6;
+        }
+    }
+
+    // Profile action buttons (Edit, Logout, etc.)
+    .profile-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 30px;
+
+        button {
+            background-color: $profile-hover-color;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: darken($profile-hover-color, 10%);
+            }
+        }
+    }
+}

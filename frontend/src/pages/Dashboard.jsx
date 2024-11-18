@@ -3,13 +3,16 @@ import SideBar from "../components/sidebar/SideBar";
 import Post from "./post/Post";
 import RequestsSideBar from "../components/sidebar/RequestsSideBar";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import Profile from "./navigations/Profile";
+import defaultUser from '..//assets/images/temp/blankUser.png'
 
-const Dashboard = ({}) => {
+const Dashboard = ({ }) => {
   const navigate = useNavigate(); // Initialize navigate hook
 
   const [userData, setUserData] = useState(null); // Store the user data
   const [isLoading, setIsLoading] = useState(true); // Track loading state
 
+  const [nav, setNav] = useState("profile")
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -24,9 +27,14 @@ const Dashboard = ({}) => {
           // If the response is not OK, throw an error
           throw new Error(data.error || "Failed to fetch user data");
         }
+        const updatedData = {
+          ...data,
+          profileImage: data.profileImage || defaultUser, // Use the default image if not set
+        };
 
-        // Set user data if the request is successful
-        setUserData(data);
+        console.log('Fetched user data: ', updatedData);
+        setUserData(updatedData); // Update the state with the user data
+
       } catch (error) {
         navigate("/");
         console.error("Error fetching user data:", error);
@@ -49,8 +57,9 @@ const Dashboard = ({}) => {
   }
   return (
     <div className="dashboard">
-      <SideBar userData={userData} />
-      <Post />
+      <SideBar userData={userData} setNav={setNav} nav={nav} />
+      {/* <Post /> */}
+      {nav === "profile" && <Profile userData={userData} />}
       {/* </div> */}
     </div>
   );

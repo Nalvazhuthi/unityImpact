@@ -1,6 +1,7 @@
 import express from "express";
 import { protectRoute } from "../middleWare/protectRoute.js";
 import {
+  edituserData,
   followOrUnfollowOrganisation,
   nearByEntities,
   sendOrCancelInvite,
@@ -16,5 +17,6 @@ routes.post(
 );
 
 routes.post("/sendOrCancelInvite", protectRoute, sendOrCancelInvite);
+routes.put("/edituserData", protectRoute, edituserData);
 
 export default routes;

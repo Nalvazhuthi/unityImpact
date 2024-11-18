@@ -11,10 +11,11 @@ $subtext-color: #666;
   flex-direction: column;
   width: 300px;
   background-color: $sidebar-bg-color;
-  padding: 20px;
+  padding: 20px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   height: 100vh;
+
   .userDetails {
     display: flex;
     flex-direction: column;
@@ -23,6 +24,21 @@ $subtext-color: #666;
 
     .details {
       text-align: center;
+      // display: ;
+      flex-direction: column;
+      gap: 0px;
+
+      .profileImage {
+        width: 60px;
+        height: 60px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+      }
     }
 
     .fullName {
@@ -50,6 +66,7 @@ $subtext-color: #666;
     align-items: center;
     flex-direction: column;
     gap: 10px;
+
     nav {
       width: 100%;
       text-align: center;
@@ -58,10 +75,17 @@ $subtext-color: #666;
       cursor: pointer;
       padding: 10px 0;
       border-radius: 10px;
+
       &:hover {
         color: $hover-color;
 
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      &.active {
+        background-color: $hover-color;
+        color: white;
+        font-weight: bold;
       }
     }
   }
@@ -167,12 +191,13 @@ $button-hover-bg-color: #218838;
   border-radius: 10px;
   height: 100vh;
   overflow-y: auto;
-  
-  .profile-img{
+
+  .profile-img {
     width: 50%;
     height: 50%;
     border-radius: 50%;
   }
+
   .section-title {
     font-size: 18px;
     font-weight: bold;
@@ -300,4 +325,9 @@ $button-hover-bg-color: #218838;
     }
   }
 }
+
+
+
+
+
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import defaultUser from "../../assets/images/temp/blankUser.png";
+import defaultUser from '../../assets/images/temp/blankUser.png'
 
-const SideBar = ({ userData }) => {
+const SideBar = ({ userData, nav, setNav }) => {
   const [nearbyEntities, setNearbyEntities] = useState([]); // Stores nearby entities (organizations/volunteers)
 
   // Fetch nearby entities based on user type
@@ -59,7 +59,10 @@ const SideBar = ({ userData }) => {
   return (
     <div className="sideBar-container flex-sb">
       <div className="userDetails">
-        <div className="details">
+        <div className="details flex">
+          <div className="profileImage">
+            <img src={userData.profileImage} alt="" />
+          </div>
           <div className="fullName">{userData.fullName}</div>
           <div className="email">{userData.email}</div>
           <div className="type">{userData.type}</div>
@@ -67,8 +70,9 @@ const SideBar = ({ userData }) => {
       </div>
 
       <div className="navigations">
-        <nav>Feeds</nav>
-        <nav>Explore</nav>
+        <nav onClick={() => setNav("feeds")} className={nav === "feeds" && "active"}>Feeds</nav>
+        <nav onClick={() => setNav("explore")} className={nav === "explore" && "active"}>Explore</nav>
+        <nav onClick={() => setNav("profile")} className={nav === "profile" && "active"}>Profile</nav>
       </div>
 
       <div className="nearByRelatedOrganisation">
