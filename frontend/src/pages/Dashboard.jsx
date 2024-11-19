@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../components/sidebar/SideBar";
-import Post from "./post/Post";
+import Post from "../assets/styles/components/post/Post";
 import RequestsSideBar from "../components/sidebar/RequestsSideBar";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import Profile from "./navigations/Profile";
