@@ -13,7 +13,29 @@ const Navigation = ({ nav, setNav, userData }) => {
   const handleNavClick = (nav) => {
     setNav(nav);
   };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:4100/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Ensure cookies are sent with the request
+      });
 
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data.message); // "Logout successful"
+        localStorage.removeItem("token");
+        window.location.href = "/"; // Redirect to login page
+      } else {
+        console.error(data.error); // "Logout error"
+      }
+    } catch (error) {
+      console.error("An error occurred while logging out:", error);
+    }
+  };
   return (
     <div className="navigation-wrapper">
       <div className="logo">LOGO</div>
@@ -57,12 +79,13 @@ const Navigation = ({ nav, setNav, userData }) => {
         </span>
       </div>
 
-      <div className="userDetails">
+      {/* <div className="userDetails">
         <div className="profileImage">
           <img src={userData.profileImage || defaultImage} alt="profile" />
         </div>
         <div className="userName">{userData.fullName}</div>
-      </div>
+      </div> */}
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
