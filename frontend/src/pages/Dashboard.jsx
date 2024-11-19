@@ -5,6 +5,8 @@ import RequestsSideBar from "../components/sidebar/RequestsSideBar";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import Profile from "./navigations/Profile";
 import defaultUser from '..//assets/images/temp/blankUser.png'
+import Navigation from "./navigation/Navigation";
+import HomePage from "./navigations/HomePage";
 
 const Dashboard = ({ }) => {
   const navigate = useNavigate(); // Initialize navigate hook
@@ -12,7 +14,7 @@ const Dashboard = ({ }) => {
   const [userData, setUserData] = useState(null); // Store the user data
   const [isLoading, setIsLoading] = useState(true); // Track loading state
 
-  const [nav, setNav] = useState("profile")
+  const [nav, setNav] = useState("home")
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -55,11 +57,17 @@ const Dashboard = ({ }) => {
       </div>
     );
   }
+
   return (
     <div className="dashboard">
-      <SideBar userData={userData} setNav={setNav} nav={nav} />
+      {/* <SideBar userData={userData} setNav={setNav} nav={nav} /> */}
+      <Navigation nav={nav} setNav={setNav} userData={userData} />
       {/* <Post /> */}
-      {nav === "profile" && <Profile userData={userData} />}
+      <div className="navigations-result">
+
+        {nav === "home" && <HomePage userData={userData} />}
+        {nav === "profile" && <Profile userData={userData} />}
+      </div>
       {/* </div> */}
     </div>
   );

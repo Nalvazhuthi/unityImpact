@@ -4,7 +4,8 @@
 button {
   border: none;
   outline: none;
-  background-color: var(--button-action-color);
+  // background-color: var(--button-action-color);
+  background-color: $dodger-blue;
   color: var(--primary-color);
   border-radius: 6px;
   padding: 6px 15px;

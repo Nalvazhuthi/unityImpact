@@ -1,0 +1,79 @@
+.navigation-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: $primaryColor;
+    height: 60px;
+
+    .logo {
+        font-size: 22px;
+        color: #2B2B2B;
+        font-weight: 800;
+    }
+
+    .navigate {
+        display: flex;
+        gap: 20px;
+
+        .nav {
+            padding: 5px 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease; // Add transition for all styles inside .nav (optional)
+        }
+
+        // Hover effect for nav items
+        .nav:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        // Active state styling
+        .nav.active {
+            font-weight: bold;
+            color: $primaryColor; // Active text color (e.g., orange/yellow)
+            background-color: $powder-blue;
+        }
+
+        // Hidden span inside nav that shows only when active
+        .nav.active>span {
+            display: inline;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        // Hidden span that fades in when nav is active
+        .nav>span {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+    }
+
+    .userDetails {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .profileImage {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .userName {
+            font-size: 14px;
+            font-weight: 600;
+        }
+    }
+}
