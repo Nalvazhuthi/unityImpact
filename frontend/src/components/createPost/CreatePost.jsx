@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Emoji } from "../../assets/images/svgExports";
 import toast from "react-hot-toast";
-import EmojiPicker from "emoji-picker-react";  // Corrected import
+import EmojiPicker from "emoji-picker-react"; // Corrected import
 
 const CreatePost = ({ userData, onPostCreated }) => {
   const [visibility, setVisibility] = useState("public");
@@ -21,8 +21,8 @@ const CreatePost = ({ userData, onPostCreated }) => {
   };
 
   const handleEmojiClick = (emojiObject) => {
-    setMessage((prevMessage) => prevMessage + emojiObject.emoji);  // Append selected emoji to the message
-    setEmojiPopupVisible(false);  // Hide the emoji picker after selecting an emoji
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji); // Append selected emoji to the message
+    setEmojiPopupVisible(false); // Hide the emoji picker after selecting an emoji
   };
 
   const convertToBase64 = (file) => {
@@ -62,7 +62,11 @@ const CreatePost = ({ userData, onPostCreated }) => {
 
   // Handle the "Post" button click
   const handlePostSubmit = async () => {
-    if (message.trim() === "" && uploadedAssets.images.length === 0 && uploadedAssets.videos.length === 0) {
+    if (
+      message.trim() === "" &&
+      uploadedAssets.images.length === 0 &&
+      uploadedAssets.videos.length === 0
+    ) {
       alert("Your post cannot be empty. Please add some content.");
       return;
     }
@@ -88,9 +92,9 @@ const CreatePost = ({ userData, onPostCreated }) => {
 
       if (response.ok) {
         toast.success("Post created successfully");
-        onPostCreated(data.post);  // Pass the created post back to the parent component
+        onPostCreated(data.post); // Pass the created post back to the parent component
         setMessage("");
-        setUploadedAssets({ images: [], videos: [] });  // Clear form after posting
+        setUploadedAssets({ images: [], videos: [] }); // Clear form after posting
       } else {
         console.error("Error from server:", data.error || "Unknown error");
         alert(data.error || "An error occurred while creating the post.");
@@ -101,7 +105,10 @@ const CreatePost = ({ userData, onPostCreated }) => {
     }
   };
 
-  const isPostDisabled = message.trim() === "" && uploadedAssets.images.length === 0 && uploadedAssets.videos.length === 0;
+  const isPostDisabled =
+    message.trim() === "" &&
+    uploadedAssets.images.length === 0 &&
+    uploadedAssets.videos.length === 0;
 
   return (
     <div className="createPost-wrapper">
@@ -116,7 +123,10 @@ const CreatePost = ({ userData, onPostCreated }) => {
             value={message}
             onChange={handleMessageChange}
           />
-          <div className="emoji" onClick={() => setEmojiPopupVisible(!emojiPopupVisible)}>
+          <div
+            className="emoji"
+            onClick={() => setEmojiPopupVisible(!emojiPopupVisible)}
+          >
             <Emoji />
           </div>
 
@@ -134,13 +144,17 @@ const CreatePost = ({ userData, onPostCreated }) => {
           <div className="create-post-content flex-sb">
             <div
               className="create-post-image-container"
-              onClick={() => document.getElementById("image-upload-input").click()}
+              onClick={() =>
+                document.getElementById("image-upload-input").click()
+              }
             >
               Upload Image
             </div>
             <div
               className="create-post-video-container"
-              onClick={() => document.getElementById("video-upload-input").click()}
+              onClick={() =>
+                document.getElementById("video-upload-input").click()
+              }
             >
               Upload Video
             </div>
@@ -178,13 +192,18 @@ const CreatePost = ({ userData, onPostCreated }) => {
           </div>
         </div>
 
-        {(uploadedAssets.images.length > 0 || uploadedAssets.videos.length > 0) && (
+        {(uploadedAssets.images.length > 0 ||
+          uploadedAssets.videos.length > 0) && (
           <div className="uploadedAssetPreview">
             {uploadedAssets.images.length > 0 && (
               <div className="image-preview-container">
                 {uploadedAssets.images.map((imageUrl, index) => (
                   <div key={index} className="image-preview-item">
-                    <img src={imageUrl} alt={`Uploaded Image ${index + 1}`} className="image-preview" />
+                    <img
+                      src={imageUrl}
+                      alt={`Uploaded Image ${index + 1}`}
+                      className="image-preview"
+                    />
                     <button
                       className="remove-image-btn"
                       onClick={() => handleAssetRemove("images", imageUrl)}

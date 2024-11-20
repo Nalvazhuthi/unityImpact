@@ -1,45 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 import toast from "react-hot-toast";
 
 const Post = ({ post, onPostDeleted }) => {
-
+  let [deleteConfimation, setDeleteConfimation] = useState(false);
   const createdAtDate = new Date(post.createdAt);
   let timeDistance = formatDistanceToNow(createdAtDate);
 
-  timeDistance = timeDistance.replace(/^about /, '');
-  const formattedCreatedAt = timeDistance === "1 minute" ? "Just now" : timeDistance + " ago";
+  timeDistance = timeDistance.replace(/^about /, "");
+  const formattedCreatedAt =
+    timeDistance === "1 minute" ? "Just now" : timeDistance + " ago";
 
-  const fullDate = createdAtDate.getFullYear() !== new Date().getFullYear()
-    ? format(createdAtDate, 'MMM d, yyyy')
-    : formattedCreatedAt;
+  const fullDate =
+    createdAtDate.getFullYear() !== new Date().getFullYear()
+      ? format(createdAtDate, "MMM d, yyyy")
+      : formattedCreatedAt;
 
   const deletePost = async (postId) => {
     try {
-      const response = await fetch(`http://localhost:4100/user/delete/${postId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          // "Authorization": ``, // If you're using JWT auth
-        },
-        credentials: "include", // Ensure cookies are included if using sessions
-      });
+      const response = await fetch(
+        `http://localhost:4100/user/delete/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // "Authorization": ``, // If you're using JWT auth
+          },
+          credentials: "include", // Ensure cookies are included if using sessions
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-
         // Call the parent callback function to update the state
         onPostDeleted(postId);
-        toast.success("Post deleted successfully")
-
+        toast.success("Post deleted successfully");
       } else {
-
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   return (
@@ -55,9 +55,19 @@ const Post = ({ post, onPostDeleted }) => {
           </div>
         </div>
 
-        <div className="delete" onClick={() => deletePost(post._id)}>
+        <div className="delete" onClick={() => setDeleteConfimation(true)}>
           Delete
         </div>
+
+        {deleteConfimation && (
+          <div className="confimationPopUp">
+            Are you sure want to delete the post
+            <div className="buttonContainer">
+              <button>Cancel</button>
+              <button onClick={() => deletePost(post._id)}>Confirm</button>
+            </div>
+          </div>
+        )}
       </div>
       <div className="post-body">
         <p className="message">{post.message}</p>

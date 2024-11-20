@@ -6,6 +6,7 @@ import {
   deletePost,
   edituserData,
   getFollowingAndFollowersPosts,
+  getMyPost,
   nearByEntities,
 } from "../controllers/userController.js";
 
@@ -17,5 +18,6 @@ routes.post("/createPost", protectRoute, createPost);
 routes.get("/allPosts", protectRoute, allPosts);
 routes.get("/followingPost", protectRoute, getFollowingAndFollowersPosts);
 routes.delete("/delete/:id", protectRoute, deletePost);
+routes.get("/myPosts", protectRoute, getMyPost);
 
 export default routes;

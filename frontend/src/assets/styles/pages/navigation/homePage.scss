@@ -1,5 +1,6 @@
 .homePage-wrapper,
-.explore-wrapper {
+.explore-wrapper,
+.ProfilePost {
   height: 100%;
   padding: 20px;
   display: flex;
@@ -14,6 +15,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .userDetails {
       padding: 10px 20px;
@@ -135,18 +140,28 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      overflow-y: auto;
+      // overflow-y: auto;
+      .confimationPopUp {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: $fullBgColor;
+        box-shadow: $shadow-main;
+        padding: 20px 30px;
+        .buttonContainer {
+          display: flex;
+          justify-content: space-around;
+        }
+      }
 
       &::-webkit-scrollbar {
         display: none;
       }
 
-      .post-wrapper {
-        border-radius: 10px;
-        padding: 10px 20px;
-        box-shadow: $shadow-main;
+      .explorePosts-wrapper {
+        overflow-x: auto;
       }
-
     }
   }
 
@@ -258,9 +273,6 @@
   }
 }
 
-
-
-
 /* Emoji Container Styles */
 .emoji {
   position: absolute;
@@ -362,7 +374,6 @@
   overflow-y: auto;
   padding-right: 5px;
 }
-
 
 // .epr-skin-tones{
 // display: none !important;

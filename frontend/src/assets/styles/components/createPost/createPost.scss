@@ -14,8 +14,6 @@
     height: 50px;
     gap: 20px;
 
-
-
     .message {
       height: 80%;
       width: 100%;
@@ -32,6 +30,8 @@
         left: 0;
         width: 100%;
         height: 100%;
+        border-radius: 12px;
+        background-color: transparent !important;
         border-radius: 12px;
       }
 
@@ -52,7 +52,8 @@
       align-items: center;
       gap: 20px;
 
-      .create-post-content {}
+      .create-post-content {
+      }
     }
   }
 
@@ -92,7 +93,6 @@
   padding: 20px;
 
   border-radius: 8px;
-
 }
 
 .create-post-content-wrapper {

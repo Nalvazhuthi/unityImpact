@@ -3,10 +3,11 @@ import SideBar from "../components/sidebar/SideBar";
 import RequestsSideBar from "../components/sidebar/RequestsSideBar";
 import { useNavigate } from "react-router-dom";
 import Profile from "./navigations/Profile";
-import defaultUser from '..//assets/images/temp/blankUser.png';
+import defaultUser from "..//assets/images/temp/blankUser.png";
 import Navigation from "./navigation/Navigation";
 import HomePage from "./navigations/HomePage";
 import Explore from "./navigations/Explore";
+import ProfilePost from "./navigations/ProfilePost";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -84,9 +85,27 @@ const Dashboard = () => {
     <div className="dashboard">
       <Navigation nav={nav} setNav={setNav} userData={userData} />
       <div className="navigations-result">
-        {nav === "home" && <HomePage userData={userData} nearbyEntities={nearbyEntities} />}
-        {nav === "profile" && <Profile userData={userData} nearbyEntities={nearbyEntities} />}
-        {nav === "explore" && <Explore userData={userData} nearbyEntities={nearbyEntities} />}
+        {nav === "home" && (
+          <HomePage
+            setNav={setNav}
+            userData={userData}
+            nearbyEntities={nearbyEntities}
+          />
+        )}
+
+        {nav === "profilePost" && (
+          <ProfilePost
+            userData={userData}
+            setNav={setNav}
+            nearbyEntities={nearbyEntities}
+          />
+        )}
+        {nav === "profile" && (
+          <Profile userData={userData} nearbyEntities={nearbyEntities} />
+        )}
+        {nav === "explore" && (
+          <Explore userData={userData} nearbyEntities={nearbyEntities} />
+        )}
       </div>
     </div>
   );

@@ -314,3 +314,27 @@ export const deletePost = async (req, res) => {
       .json({ error: "An error occurred while deleting the post" });
   }
 };
+
+export const getMyPost = async (req, res) => {
+  const userId = req.user._id; // The logged-in user's ID (extracted from token or session)
+
+  try {
+    // Fix the find query to properly query based on userId
+    let posts = await CreatePost.find({ userId: userId }) // Correct query syntax
+      .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
+      // .populate({
+      //   path: "userId", // Populate the userId field
+      //   select: "-password", // Exclude the password field from the user data
+      // });
+
+    return res.status(200).json({
+      message: "Posts fetched successfully!",
+      posts, // Send the posts array
+    });
+  } catch (error) {
+    // Handle errors (e.g., database connection issues)
+    return res.status(500).json({
+      error: "An error occurred while fetching posts.",
+    });
+  }
+};

@@ -4,7 +4,7 @@ import CreatePost from "../../components/createPost/CreatePost";
 import Post from "../../components/post/Post";
 import SideBar from "../../components/sidebar/SideBar";
 
-const HomePage = ({ userData, nearbyEntities }) => {
+const HomePage = ({ userData, setNav, nearbyEntities }) => {
   const [posts, setPosts] = useState([]);
 
   // Function to handle post creation
@@ -14,7 +14,7 @@ const HomePage = ({ userData, nearbyEntities }) => {
 
   // Function to handle post deletion (update state after delete)
   const handlePostDeleted = (postId) => {
-    setPosts((prevPosts) => prevPosts.filter(post => post._id !== postId));
+    setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
   };
 
   // Function to fetch posts of users you follow
@@ -29,19 +29,19 @@ const HomePage = ({ userData, nearbyEntities }) => {
       });
 
       const data = await response.json();
-      console.log('API Response:', typeof (data));
+      console.log("API Response:", typeof data);
 
       if (response.ok) {
         if (Array.isArray(data.posts)) {
           setPosts(data.posts);
         } else {
-          console.error('Posts is not an array:', data.posts);
+          console.error("Posts is not an array:", data.posts);
         }
       } else {
-        console.error('Error from server:', data.error);
+        console.error("Error from server:", data.error);
       }
     } catch (error) {
-      console.error('An error occurred while fetching posts:', error);
+      console.error("An error occurred while fetching posts:", error);
     }
   };
 
@@ -51,7 +51,11 @@ const HomePage = ({ userData, nearbyEntities }) => {
 
   return (
     <div className="homePage-wrapper">
-      <SideBar userData={userData} nearbyEntities={nearbyEntities} />
+      <SideBar
+        setNav={setNav}
+        userData={userData}
+        nearbyEntities={nearbyEntities}
+      />
 
       <div className="content">
         <CreatePost userData={userData} onPostCreated={handlePostCreated} />

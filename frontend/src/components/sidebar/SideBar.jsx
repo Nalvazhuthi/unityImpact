@@ -1,7 +1,7 @@
-import React from 'react'
-import defaultImage from "../../assets/images/temp/blankUser.png"
+import React from "react";
+import defaultImage from "../../assets/images/temp/blankUser.png";
 
-const SideBar = ({ userData, nearbyEntities }) => {
+const SideBar = ({ setNav, userData, nearbyEntities }) => {
   return (
     <div className="leftSideWrapper">
       <div className="userDetails flex">
@@ -13,7 +13,7 @@ const SideBar = ({ userData, nearbyEntities }) => {
           <div className="userEmail">{userData.email}</div>
         </div>
         <div className="userType">{userData.type}</div>
-        <button>My Profile</button>
+        <button onClick={() => setNav("profilePost")}>My Profile</button>
       </div>
 
       <div className="nearByUserDetails flex">
@@ -21,13 +21,16 @@ const SideBar = ({ userData, nearbyEntities }) => {
           Near by{" "}
           {userData.type === "volunteer" ? "Organization" : "Volunteers"}
         </h1>
-        
+
         {/* Check if nearbyEntities has items */}
         {nearbyEntities && nearbyEntities.length > 0 ? (
           nearbyEntities.map((entity) => (
             <div key={entity.id} className="entitiers-wrapper">
               <div className="image-wrapper">
-                <img src={entity.profileImage || defaultImage} alt={entity.fullName} />
+                <img
+                  src={entity.profileImage || defaultImage}
+                  alt={entity.fullName}
+                />
               </div>
               <div className="entity">
                 <div className="userName">{entity.fullName}</div>
@@ -43,7 +46,7 @@ const SideBar = ({ userData, nearbyEntities }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default SideBar;
