@@ -1,55 +1,77 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../components/sidebar/SideBar";
-import Post from "../assets/styles/components/post/Post";
 import RequestsSideBar from "../components/sidebar/RequestsSideBar";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
 import Profile from "./navigations/Profile";
-import defaultUser from '..//assets/images/temp/blankUser.png'
+import defaultUser from '..//assets/images/temp/blankUser.png';
 import Navigation from "./navigation/Navigation";
 import HomePage from "./navigations/HomePage";
+import Explore from "./navigations/Explore";
 
-const Dashboard = ({ }) => {
-  const navigate = useNavigate(); // Initialize navigate hook
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [nav, setNav] = useState("home");
+  const [nearbyEntities, setNearbyEntities] = useState([]);
 
-  const [userData, setUserData] = useState(null); // Store the user data
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
-
-  const [nav, setNav] = useState("home")
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await fetch("http://localhost:4100/auth/me", {
           method: "GET",
-          credentials: "include", // Ensure cookies are sent with the request
+          credentials: "include",
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-          // If the response is not OK, throw an error
           throw new Error(data.error || "Failed to fetch user data");
         }
         const updatedData = {
           ...data,
-          profileImage: data.profileImage || defaultUser, // Use the default image if not set
+          profileImage: data.profileImage || defaultUser,
         };
 
-        console.log('Fetched user data: ', updatedData);
-        setUserData(updatedData); // Update the state with the user data
-
+        setUserData(updatedData);
       } catch (error) {
         navigate("/");
         console.error("Error fetching user data:", error);
       } finally {
-        setIsLoading(false); // Stop loading state when the request is done
+        setIsLoading(false);
       }
     };
 
     fetchUserData();
-    // Call the function to fetch user data when component mounts
-  }, []);
+  }, [navigate]);
 
-  // Handle loading state and conditionally render the app
+  // Fetch nearby entities based on user type
+  useEffect(() => {
+    const fetchNearbyEntities = async () => {
+      try {
+        const res = await fetch("http://localhost:4100/user/nearMe", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setNearbyEntities(data);
+        } else {
+          console.error("Failed to fetch nearby entities");
+        }
+      } catch (error) {
+        console.error("Error fetching nearby entities:", error);
+      }
+    };
+
+    fetchNearbyEntities();
+  }, []); // Empty dependency array ensures this runs only once on mount
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -60,19 +82,14 @@ const Dashboard = ({ }) => {
 
   return (
     <div className="dashboard">
-      {/* <SideBar userData={userData} setNav={setNav} nav={nav} /> */}
       <Navigation nav={nav} setNav={setNav} userData={userData} />
-      {/* <Post /> */}
       <div className="navigations-result">
-
-        {nav === "home" && <HomePage userData={userData} />}
-        {nav === "profile" && <Profile userData={userData} />}
+        {nav === "home" && <HomePage userData={userData} nearbyEntities={nearbyEntities} />}
+        {nav === "profile" && <Profile userData={userData} nearbyEntities={nearbyEntities} />}
+        {nav === "explore" && <Explore userData={userData} nearbyEntities={nearbyEntities} />}
       </div>
-      {/* </div> */}
     </div>
   );
 };
 
 export default Dashboard;
-
-// when app start if auth/me is fetch open directly dashborad else open auth

@@ -13,7 +13,7 @@ $profile-height: 100%; // Full height of the viewport
 
 
 .navigations-result {
-    height: 100%;
+    height: calc(100% - 50px);
 }
 
 .profile-container {

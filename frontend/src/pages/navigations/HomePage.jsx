@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 import CreatePost from "../../components/createPost/CreatePost";
-import Post from "../../assets/styles/components/post/Post";
-const HomePage = ({ userData }) => {
-  const [nearbyEntities, setNearbyEntities] = useState([]); // Stores nearby entities (organizations/volunteers)
+import Post from "../../components/post/Post";
+import SideBar from "../../components/sidebar/SideBar";
 
-  // Fetch nearby entities based on user type
-  const fetchNearbyEntities = async () => {
+const HomePage = ({ userData, nearbyEntities }) => {
+  const [posts, setPosts] = useState([]);
+
+  // Function to handle post creation
+  const handlePostCreated = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  // Function to handle post deletion (update state after delete)
+  const handlePostDeleted = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter(post => post._id !== postId));
+  };
+
+  // Function to fetch posts of users you follow
+  const fetchFollowingUsersPost = async () => {
     try {
-      const res = await fetch("http://localhost:4100/user/nearMe", {
+      const response = await fetch("http://localhost:4100/user/followingPost", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -16,71 +28,38 @@ const HomePage = ({ userData }) => {
         credentials: "include",
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        setNearbyEntities(data); // Update the nearbyEntities state
+      const data = await response.json();
+      console.log('API Response:', typeof (data));
+
+      if (response.ok) {
+        if (Array.isArray(data.posts)) {
+          setPosts(data.posts);
+        } else {
+          console.error('Posts is not an array:', data.posts);
+        }
       } else {
-        console.error("Failed to fetch nearby entities");
+        console.error('Error from server:', data.error);
       }
     } catch (error) {
-      console.error("Error fetching nearby entities:", error);
+      console.error('An error occurred while fetching posts:', error);
     }
   };
 
   useEffect(() => {
-    fetchNearbyEntities();
+    fetchFollowingUsersPost();
   }, []);
 
-  const [posts, setPosts] = useState([]);
-
-  // Function to handle post creation
-  const handlePostCreated = (newPost) => {
-    // Adds the new post to the list of posts (you can customize this logic)
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
-  };
   return (
     <div className="homePage-wrapper">
-      <div className="leftSideWrapper">
-        <div className="userDetails flex">
-          <div className="userImage">
-            <img src={userData.profileImage} alt="" />
-          </div>
-          <div className="userDetail flex">
-            <div className="userFullName">{userData.fullName}</div>
-            <div className="userEmail">{userData.email}</div>
-          </div>
-          <div className="userType">{userData.type}</div>
-          <button>My Profile</button>
-        </div>
-
-        <div className="nearByUserDetails flex">
-          {/* Here you can map over the nearbyEntities and display them */}
-          <h1>
-            Near by{" "}
-            {userData.type == "volunteer" ? "Organization" : "Volunteers"}
-          </h1>
-          {nearbyEntities.map((entity) => (
-            <div className="entitiers-wrapper">
-              <div className="image-wrapper">
-                <img src={entity.profileImage || defaultImage} alt="" />
-              </div>
-              <div key={entity.id} className="entity">
-                <div className="userName">{entity.fullName}</div>
-                <div className="userEmail">{entity.bio}</div>
-              </div>
-              <button>
-                {userData.type == "volunteer" ? "Follow" : "Invite"}
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <SideBar userData={userData} nearbyEntities={nearbyEntities} />
 
       <div className="content">
         <CreatePost userData={userData} onPostCreated={handlePostCreated} />
-        {posts.map((post, index) => (
-          <Post key={index} post={post} />
-        ))}
+        <div className="homePage-post-wrapper">
+          {posts?.map((post, index) => (
+            <Post key={index} post={post} onPostDeleted={handlePostDeleted} />
+          ))}
+        </div>
       </div>
     </div>
   );

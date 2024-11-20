@@ -1,44 +1,58 @@
 import React, { useState } from "react";
+import { Emoji } from "../../assets/images/svgExports";
+import toast from "react-hot-toast";
+import EmojiPicker from "emoji-picker-react";  // Corrected import
 
 const CreatePost = ({ userData, onPostCreated }) => {
-  // State to handle the dropdown value (visibility)
   const [visibility, setVisibility] = useState("public");
-
-  // State to store uploaded assets (images, videos, etc.)
   const [uploadedAssets, setUploadedAssets] = useState({
     images: [],
     videos: [],
   });
-
-  // State to store the text message of the post
   const [message, setMessage] = useState("");
+  const [emojiPopupVisible, setEmojiPopupVisible] = useState(false); // State to control emoji picker visibility
 
-  // Handle dropdown change for visibility
   const handleVisibilityChange = (event) => {
     setVisibility(event.target.value);
   };
 
-  // Handle text input change (message)
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
   };
 
-  // Handle file input change (multiple image or video uploads)
-  const handleAssetUpload = (event, assetType) => {
-    const files = event.target.files; // Get all selected files
-    const newAssets = Array.from(files).map((file) =>
-      URL.createObjectURL(file)
-    ); // Create object URLs for each file
+  const handleEmojiClick = (emojiObject) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);  // Append selected emoji to the message
+    setEmojiPopupVisible(false);  // Hide the emoji picker after selecting an emoji
+  };
 
-    setUploadedAssets((prevAssets) => {
-      return {
-        ...prevAssets,
-        [assetType]: [...prevAssets[assetType], ...newAssets],
-      };
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
     });
   };
 
-  // Handle asset removal (image or video)
+  const handleAssetUpload = async (event, assetType) => {
+    const files = event.target.files;
+    const newAssets = [];
+
+    for (let file of files) {
+      if (assetType === "images" && file.type.startsWith("image")) {
+        const base64Image = await convertToBase64(file);
+        newAssets.push(base64Image);
+      } else if (assetType === "videos" && file.type.startsWith("video")) {
+        newAssets.push(URL.createObjectURL(file));
+      }
+    }
+
+    setUploadedAssets((prevAssets) => ({
+      ...prevAssets,
+      [assetType]: [...prevAssets[assetType], ...newAssets],
+    }));
+  };
+
   const handleAssetRemove = (assetType, assetUrl) => {
     setUploadedAssets((prevAssets) => ({
       ...prevAssets,
@@ -47,22 +61,47 @@ const CreatePost = ({ userData, onPostCreated }) => {
   };
 
   // Handle the "Post" button click
-  const handlePostSubmit = () => {
+  const handlePostSubmit = async () => {
+    if (message.trim() === "" && uploadedAssets.images.length === 0 && uploadedAssets.videos.length === 0) {
+      alert("Your post cannot be empty. Please add some content.");
+      return;
+    }
+
     const post = {
       message,
       visibility,
       images: uploadedAssets.images,
-      videos: uploadedAssets.videos,
-      createdAt: new Date().toISOString(),
     };
 
-    // Pass the post data to the parent component (Post component)
-    onPostCreated(post);
+    try {
+      const response = await fetch("http://localhost:4100/user/createPost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Ensures cookies are sent
+        body: JSON.stringify(post),
+      });
 
-    // Clear form after posting (optional)
-    setMessage("");
-    setUploadedAssets({ images: [], videos: [] });
+      console.log("response", response);
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Post created successfully");
+        onPostCreated(data.post);  // Pass the created post back to the parent component
+        setMessage("");
+        setUploadedAssets({ images: [], videos: [] });  // Clear form after posting
+      } else {
+        console.error("Error from server:", data.error || "Unknown error");
+        alert(data.error || "An error occurred while creating the post.");
+      }
+    } catch (error) {
+      console.error("An error occurred while creating the post:", error);
+      alert("An error occurred while creating the post.");
+    }
   };
+
+  const isPostDisabled = message.trim() === "" && uploadedAssets.images.length === 0 && uploadedAssets.videos.length === 0;
 
   return (
     <div className="createPost-wrapper">
@@ -77,38 +116,36 @@ const CreatePost = ({ userData, onPostCreated }) => {
             value={message}
             onChange={handleMessageChange}
           />
-          <div className="emoji">Emoji</div>
+          <div className="emoji" onClick={() => setEmojiPopupVisible(!emojiPopupVisible)}>
+            <Emoji />
+          </div>
+
+          {/* Emoji picker popup */}
+          {emojiPopupVisible && (
+            <div className="emoji-popup">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
         </div>
       </div>
 
       <div className="create-post-content">
         <div className="create-post-content-wrapper">
           <div className="create-post-content flex-sb">
-            {/* Image Upload Section */}
             <div
               className="create-post-image-container"
-              onClick={() =>
-                document.getElementById("image-upload-input").click()
-              }
+              onClick={() => document.getElementById("image-upload-input").click()}
             >
               Upload Image
             </div>
-
-            {/* Video Upload Section */}
             <div
               className="create-post-video-container"
-              onClick={() =>
-                document.getElementById("video-upload-input").click()
-              }
+              onClick={() => document.getElementById("video-upload-input").click()}
             >
               Upload Video
             </div>
-
-            {/* Poll Upload Section (if needed) */}
-            {/* <div className="create-post-poll-container">Create Poll</div> */}
           </div>
 
-          {/* Hidden File Inputs */}
           <input
             id="image-upload-input"
             type="file"
@@ -128,7 +165,6 @@ const CreatePost = ({ userData, onPostCreated }) => {
             style={{ display: "none" }}
           />
 
-          {/* Dropdown for Post Visibility selection */}
           <div className="post-visibility-selector">
             <select
               id="visibility-dropdown"
@@ -141,21 +177,14 @@ const CreatePost = ({ userData, onPostCreated }) => {
             </select>
           </div>
         </div>
-        {/* Asset Previews (Images and Videos) */}
-        {console.log("uploadedAssets", uploadedAssets)}
-        {(uploadedAssets.images.length > 0 ||
-          uploadedAssets.videos.length > 0) && (
+
+        {(uploadedAssets.images.length > 0 || uploadedAssets.videos.length > 0) && (
           <div className="uploadedAssetPreview">
-            {/* Image Previews */}
             {uploadedAssets.images.length > 0 && (
               <div className="image-preview-container">
                 {uploadedAssets.images.map((imageUrl, index) => (
                   <div key={index} className="image-preview-item">
-                    <img
-                      src={imageUrl}
-                      alt={`Uploaded Image ${index + 1}`}
-                      className="image-preview"
-                    />
+                    <img src={imageUrl} alt={`Uploaded Image ${index + 1}`} className="image-preview" />
                     <button
                       className="remove-image-btn"
                       onClick={() => handleAssetRemove("images", imageUrl)}
@@ -167,7 +196,6 @@ const CreatePost = ({ userData, onPostCreated }) => {
               </div>
             )}
 
-            {/* Video Previews */}
             {uploadedAssets.videos.length > 0 && (
               <div className="video-preview-container">
                 {uploadedAssets.videos.map((videoUrl, index) => (
@@ -186,7 +214,10 @@ const CreatePost = ({ userData, onPostCreated }) => {
           </div>
         )}
       </div>
-      <button onClick={handlePostSubmit}>Post</button>
+
+      <button onClick={handlePostSubmit} disabled={isPostDisabled}>
+        Post
+      </button>
     </div>
   );
 };

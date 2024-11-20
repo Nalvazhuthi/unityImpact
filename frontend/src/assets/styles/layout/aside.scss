@@ -1,2 +1,125 @@
 @import "../abstracts/variables";
 
+
+.leftSideWrapper {
+    // flex-grow: 1;
+    height: 100%;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .userDetails {
+        padding: 10px 20px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        flex-basis: auto;
+        box-shadow: $shadow-main;
+        border-radius: 10px;
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+
+        .userImage {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        .userDetail {
+            flex-direction: column;
+            gap: 0px;
+
+            .userFullName {
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            .userEmail {
+                color: $cadet-gray;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        .userType {
+            font-size: 14px;
+            color: $battleship-gray;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .nearByUserDetails {
+        flex-grow: 1;
+        padding: 10px 20px;
+        box-shadow: $shadow-main;
+        border-radius: 10px;
+        gap: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        .entitiers-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+
+            .image-wrapper {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                }
+            }
+
+            .entity {
+                // width: 100%;
+                width: 40%;
+
+                .userName {
+                    font-size: 15px;
+                    font-weight: 500;
+                }
+
+                .userEmail {
+                    width: 100%;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+            }
+
+            button {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.explore-wrapper {
+    display: flex;
+}

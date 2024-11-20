@@ -1,4 +1,5 @@
 import Invite from "../models/Invite.js";
+import CreatePost from "../models/postSchema.js";
 import User from "../models/signupModels/User.js";
 import bcrypt from "bcryptjs";
 
@@ -59,61 +60,9 @@ export const nearByEntities = async (req, res) => {
 
     return res.status(200).json(entitiesWithFollowStatus);
   } catch (error) {
-    console.error(error);
     return res
       .status(500)
       .json({ error: "An error occurred while fetching nearby entities." });
-  }
-};
-
-// Follow a user (an organization or volunteer)
-export const followOrUnfollowOrganisation = async (req, res) => {
-  try {
-    console.log("req.body", req.body);
-    const { userIdToFollow } = req.body; // The user ID to follow or unfollow
-    const currentUserId = req.user._id; // The logged-in user
-
-    // Find both users (current user and the user to be followed/unfollowed)
-    const currentUser = await User.findById(currentUserId);
-    const userToFollow = await User.findById(userIdToFollow);
-
-    if (!currentUser || !userToFollow) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if the user is already following the target user
-    const isFollowing = currentUser.following.includes(userIdToFollow);
-
-    if (isFollowing) {
-      // Unfollow the user
-      currentUser.following = currentUser.following.filter(
-        (followingId) => !followingId.equals(userIdToFollow)
-      );
-      userToFollow.followers = userToFollow.followers.filter(
-        (followerId) => !followerId.equals(currentUserId)
-      );
-
-      // Save changes
-      await currentUser.save();
-      await userToFollow.save();
-
-      return res.status(200).json({ message: "Unfollowed successfully" });
-    } else {
-      // Follow the user
-      currentUser.following.push(userIdToFollow); // Add to current user's following
-      userToFollow.followers.push(currentUserId); // Add to user's followers
-
-      // Save changes
-      await currentUser.save();
-      await userToFollow.save();
-
-      return res.status(200).json({ message: "Followed successfully" });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      error: "An error occurred while following or unfollowing the user",
-    });
   }
 };
 
@@ -138,7 +87,7 @@ export const sendOrCancelInvite = async (req, res) => {
       userId: volunteerId,
       organization: organizationId,
     });
-    console.log("Existing Invite:", existingInvite); // Log to verify the query result
+    // Log to verify the query result
 
     if (existingInvite) {
       // If the invite is "pending", cancel it
@@ -168,7 +117,6 @@ export const sendOrCancelInvite = async (req, res) => {
       return res.status(200).json({ message: "Invitation sent successfully" });
     }
   } catch (error) {
-    console.error("Error in sendOrCancelInvite:", error);
     return res.status(500).json({ error: "Failed to process invitation" });
   }
 };
@@ -247,9 +195,122 @@ export const edituserData = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 // routes.put("/edituserData", protectRoute, edituserData);
+export const createPost = async (req, res) => {
+  const { message, visibility, images } = req.body;
+  const userId = req.user._id; // Assuming `req.user` has the authenticated user ID
+
+  // Validate that the images are in the correct format (base64-encoded strings)
+  for (const image of images) {
+    if (typeof image !== "string" || !image.startsWith("data:image")) {
+      return res.status(400).json({ error: "Invalid image format." });
+    }
+  }
+
+  try {
+    const newPost = new CreatePost({
+      message,
+      visibility,
+      images, // Save the array of base64-encoded images
+      createdAt: new Date().toISOString(),
+      userId,
+    });
+
+    // Save the new post in the database
+    await newPost.save();
+
+    return res.status(201).json({
+      message: "Post created successfully!",
+      post: newPost,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "An error occurred while creating the post." });
+  }
+};
+
+export const allPosts = async (req, res) => {
+  try {
+    let posts = await CreatePost.find().sort({ createdAt: -1 }).populate({
+      path: "userId", // Populate the userId field
+      select: "-password", // Exclude the password field from the user data
+    });
+    return res.status(200).json({
+      message: "Posts fetched successfully!",
+      posts, // Send the posts array
+    });
+  } catch (error) {
+    // Handle errors (e.g., database connection issues)
+    return res.status(500).json({
+      error: "An error occurred while fetching posts.",
+    });
+  }
+};
+
+export const getFollowingAndFollowersPosts = async (req, res) => {
+  const userId = req.user._id; // The logged-in user's ID (extracted from token or session)
+
+  try {
+    // Fetch the logged-in user from the database
+    const user = await User.findById(userId).populate("following", "_id");
+
+    // If the user is not found, send an error response
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Create an array of IDs to get posts from users the logged-in user is following
+    const followingUserIds = user.following.map(
+      (followedUser) => followedUser._id
+    );
+
+    // Add the current user's own ID to the list of IDs to fetch their own posts
+    followingUserIds.push(userId);
+
+    // Fetch posts from the users the logged-in user is following, including their own posts
+    let posts = await CreatePost.find({
+      userId: { $in: followingUserIds }, // Fetch posts from users in the followingUserIds array
+    })
+      .sort({ createdAt: -1 }) // Sort by the most recent posts first
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "-password", // Exclude the password field from the user data
+      });
+
+    // Send a success response with the fetched posts
+    return res.status(200).json({
+      message: "Posts fetched successfully!",
+      posts, // Send the posts array
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "An error occurred while fetching posts.",
+      details: error.message, // Send the error details for better debugging
+    });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  const { id } = req.params; // Accessing the id from params
+  // Logging the id to ensure it's correct
+
+  try {
+    // Find the post by ID and delete it
+    const post = await CreatePost.findByIdAndDelete(id); // Use the correct `id` here
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the post" });
+  }
+};

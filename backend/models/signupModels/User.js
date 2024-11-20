@@ -27,3 +27,4 @@ UserSchema.index({ location: "2dsphere" });
 export default mongoose.model("User", UserSchema);
 
 
+// create a API which fech loged user following and followes and login in users post 

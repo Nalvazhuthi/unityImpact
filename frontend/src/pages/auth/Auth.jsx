@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast"; // Import toast for notifications
+import { CurrentLocation } from "../../assets/images/svgExports";
 
 const Auth = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -152,7 +153,7 @@ const Auth = ({ setIsAuthenticated }) => {
                     readOnly
                   />
                   <button type="button" onClick={getCurrentLocation}>
-                    Use Current Location
+                    <CurrentLocation />
                   </button>
                 </div>
                 <div className="account-type">

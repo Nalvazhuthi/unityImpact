@@ -1,11 +1,13 @@
-.homePage-wrapper {
+.homePage-wrapper,
+.explore-wrapper {
   height: 100%;
   padding: 20px;
   display: flex;
   // flex-direction: column;
   gap: 20px;
 
-  .leftSideWrapper {
+  .leftSideWrapper,
+  .content {
     // flex-grow: 1;
     height: 100%;
     width: 300px;
@@ -47,6 +49,8 @@
 
         .userEmail {
           color: $cadet-gray;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
 
@@ -99,11 +103,19 @@
         }
 
         .entity {
-          width: 60%;
+          // width: 100%;
+          width: 40%;
 
           .userName {
             font-size: 15px;
             font-weight: 500;
+          }
+
+          .userEmail {
+            width: 100%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
           }
         }
 
@@ -116,6 +128,26 @@
 
   .content {
     flex-grow: 2;
+
+    .homePage-post-wrapper {
+      flex-grow: 1;
+      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .post-wrapper {
+        border-radius: 10px;
+        padding: 10px 20px;
+        box-shadow: $shadow-main;
+      }
+
+    }
   }
 
   /* Responsive Styles */
@@ -148,6 +180,8 @@
 
       .userEmail {
         font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
@@ -199,6 +233,8 @@
 
       .userEmail {
         font-size: 12px;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
     }
 
@@ -220,4 +256,124 @@
       }
     }
   }
+}
+
+
+
+
+/* Emoji Container Styles */
+.emoji {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #007bff;
+  /* Blue color for emoji button */
+}
+
+.emoji:hover {
+  color: #0056b3;
+  /* Darker blue when hovered */
+}
+
+/* Emoji Popup (emoji-picker-react) */
+.emoji-popup {
+  position: absolute;
+  // bottom: 60px; /* Position the emoji picker below the message input */
+  right: 10px;
+  /* Align it to the right of the input */
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  /* Ensure it appears above other content */
+  // max-width: 300px; /* Set a max-width to prevent it from becoming too wide */
+  padding: 10px;
+  overflow: auto;
+}
+
+.emoji-popup .emoji-search {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.emoji-popup .emoji-search input {
+  width: 100%;
+  // padding: 5px;
+  padding-left: 29px !important;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.emoji-popup .emoji-search input:focus {
+  border-color: #007bff;
+}
+
+/* The Emoji Picker itself */
+.emoji-popup .emoji-category-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+.emoji-popup .emoji-category-list .emoji-group {
+  display: inline-block;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.emoji-popup .emoji-category-list .emoji-group:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.2);
+}
+
+.emoji-popup .emoji-category-list .emoji-group img {
+  width: 30px;
+  height: 30px;
+  transition: all 0.3s ease;
+}
+
+.emoji-popup .emoji-category-list .emoji-group img:hover {
+  transform: scale(1.2);
+}
+
+.emoji-popup .emoji-category-list .emoji-group.selected {
+  border: 2px solid #007bff;
+  /* Highlight selected emoji */
+}
+
+.emoji-popup .emoji-category-list .emoji-group img.selected {
+  border-radius: 50%;
+  border: 2px solid #007bff;
+}
+
+/* Scroll area for the emojis */
+.emoji-popup .emoji-picker {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+
+// .epr-skin-tones{
+// display: none !important;
+// }
+
+epr-skin-tones,
+.epr_-v86i3b,
+.epr_q53mwh,
+.epr_vl50xg,
+.epr_vwruzc,
+.epr_zeg9on,
+.epr_qyh4cg {
+  display: none;
 }

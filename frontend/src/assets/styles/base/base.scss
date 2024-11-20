@@ -70,7 +70,7 @@ input {
   width: 100%;
   border: none;
   outline: none;
-  border: 1px solid gray;
+  border: 1px solid gray !important;
   padding: 5px 10px;
   background: transparent;
   border-radius: 3px;
@@ -79,9 +79,27 @@ input {
 
 button[type="submit"] {
   width: 100%;
-  background-color: #5f19fd;
+  background-color: $dodger-blue;
   color: $primary-color;
   font-size: 12px;
+
+  &:hover {
+    background-color: rgb(9, 113, 211);
+  }
 }
 
 .content-container {}
+
+
+.img-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
