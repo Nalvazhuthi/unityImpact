@@ -8,13 +8,16 @@ import Navigation from "./navigation/Navigation";
 import HomePage from "./navigations/HomePage";
 import Explore from "./navigations/Explore";
 import ProfilePost from "./navigations/ProfilePost";
+import { useUser } from "../store/UserProvider";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [nav, setNav] = useState("home");
   const [nearbyEntities, setNearbyEntities] = useState([]);
+  const [selecteduser, setSelectedUser] = useState("");
+  const [userPosts, setUserPosts] = useState([]); // Ensure it's initialized as an empty array
+  const { userData, setUserData } = useUser();  // Access the global user data
 
   // Fetch user data
   useEffect(() => {
@@ -38,7 +41,6 @@ const Dashboard = () => {
         setUserData(updatedData);
       } catch (error) {
         navigate("/");
-        console.error("Error fetching user data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -62,16 +64,42 @@ const Dashboard = () => {
         if (res.ok) {
           const data = await res.json();
           setNearbyEntities(data);
-        } else {
-          console.error("Failed to fetch nearby entities");
         }
       } catch (error) {
-        console.error("Error fetching nearby entities:", error);
+
       }
     };
 
     fetchNearbyEntities();
   }, []); // Empty dependency array ensures this runs only once on mount
+
+  // Function to fetch user posts
+  const fetchSelectedUserPosts = async () => {
+    if (!selecteduser) return; // Prevent API call if no user is selected
+
+    try {
+      const response = await fetch(`http://localhost:4100/user/profile/${selecteduser}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include credentials if needed (cookies or token)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserPosts(data); // Assuming your response contains a 'posts' array
+      }
+    } catch (error) {
+
+    }
+  };
+
+  useEffect(() => {
+    // Log selected user before fetching posts
+    fetchSelectedUserPosts();
+
+  }, [selecteduser]); // Re-fetch posts whenever selecteduser changes
 
   if (isLoading) {
     return (
@@ -85,30 +113,37 @@ const Dashboard = () => {
     <div className="dashboard">
       <Navigation nav={nav} setNav={setNav} userData={userData} />
       <div className="navigations-result">
+        <SideBar
+          setNav={setNav}
+          userData={userData}
+          nearbyEntities={nearbyEntities}
+          setSelectedUser={setSelectedUser}
+          userPosts={userPosts}
+        />
         {nav === "home" && (
           <HomePage
+            userPosts={userPosts}
             setNav={setNav}
             userData={userData}
             nearbyEntities={nearbyEntities}
+            setSelectedUser={setSelectedUser}
           />
         )}
 
         {nav === "profilePost" && (
           <ProfilePost
-            userData={userData}
             setNav={setNav}
-            nearbyEntities={nearbyEntities}
+            userPosts={userPosts}
           />
         )}
-        {nav === "profile" && (
-          <Profile userData={userData} nearbyEntities={nearbyEntities} />
-        )}
-        {nav === "explore" && (
-          <Explore userData={userData} nearbyEntities={nearbyEntities} />
-        )}
+        {nav === "profile" && <Profile userData={userData} nearbyEntities={nearbyEntities} />}
+        {nav === "explore" && <Explore userData={userData} nearbyEntities={nearbyEntities} />}
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+
+

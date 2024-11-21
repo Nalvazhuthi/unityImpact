@@ -199,10 +199,14 @@ export const edituserData = async (req, res) => {
   }
 };
 
-// routes.put("/edituserData", protectRoute, edituserData);
 export const createPost = async (req, res) => {
   const { message, visibility, images } = req.body;
   const userId = req.user._id; // Assuming `req.user` has the authenticated user ID
+
+  // Check if `images` is an array, if it's not, set it to an empty array
+  if (!Array.isArray(images)) {
+    return res.status(400).json({ error: "Images should be an array." });
+  }
 
   // Validate that the images are in the correct format (base64-encoded strings)
   for (const image of images) {
@@ -236,10 +240,12 @@ export const createPost = async (req, res) => {
 
 export const allPosts = async (req, res) => {
   try {
-    let posts = await CreatePost.find().sort({ createdAt: -1 }).populate({
-      path: "userId", // Populate the userId field
-      select: "-password", // Exclude the password field from the user data
-    });
+    let posts = await CreatePost.find({ visibility: "public" })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "-password", // Exclude the password field from the user data
+      });
     return res.status(200).json({
       message: "Posts fetched successfully!",
       posts, // Send the posts array
@@ -321,11 +327,11 @@ export const getMyPost = async (req, res) => {
   try {
     // Fix the find query to properly query based on userId
     let posts = await CreatePost.find({ userId: userId }) // Correct query syntax
-      .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
-      // .populate({
-      //   path: "userId", // Populate the userId field
-      //   select: "-password", // Exclude the password field from the user data
-      // });
+      .sort({ createdAt: -1 }); // Sorting by createdAt in descending order
+    // .populate({
+    //   path: "userId", // Populate the userId field
+    //   select: "-password", // Exclude the password field from the user data
+    // });
 
     return res.status(200).json({
       message: "Posts fetched successfully!",
@@ -336,5 +342,137 @@ export const getMyPost = async (req, res) => {
     return res.status(500).json({
       error: "An error occurred while fetching posts.",
     });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  const { id } = req.params; // Get user ID from route parameters
+  try {
+    // Fetch user details based on the provided user ID
+    let user = await User.findById(id); // Use findById to directly query by _id
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    // Fetch posts created by the user
+    let posts = await CreatePost.find({ userId: id })
+      // Fetch posts where userId matches the provided id
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "userId", // Populate the userId field
+        select: "-password", // Exclude the password field from the user data
+      });
+
+    console.log("posts: ", posts);
+    // Return user details and posts
+    return res.status(200).json({
+      user, // Send user details
+      posts, // Send posts created by the user
+    });
+  } catch (error) {
+    console.log("Error fetching profile data:", error);
+    return res.status(500).json({
+      error: "An error occurred while fetching the profile data.",
+    });
+  }
+};
+
+export const likeAndDislike = async (req, res) => {
+  const { id } = req.params; // Get the postId from the request params
+  const userId = req.user._id; // Get the user ID from the request (assumes user is authenticated)
+
+  try {
+    // Find the post by ID
+    const post = await CreatePost.findById({ _id: id });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if the user has already liked the post
+    if (post.likes.includes(userId)) {
+      // If user already liked the post, remove the like (unlike it)
+      post.likes = post.likes.filter(
+        (like) => like.toString() !== userId.toString()
+      );
+    } else if (post.dislikes.includes(userId)) {
+      // If the user disliked the post, remove the dislike
+      post.dislikes = post.dislikes.filter(
+        (dislike) => dislike.toString() !== userId.toString()
+      );
+      // Then add the like
+      post.likes.push(userId);
+    } else {
+      // If the user hasn't liked or disliked the post, add a like
+      post.likes.push(userId);
+    }
+
+    // Save the updated post
+    await post.save();
+
+    // Populate the user details for likes and dislikes, excluding passwords
+    const populatedPost = await CreatePost.findById(id)
+      .populate({
+        path: "likes", // Populate the 'likes' field (an array of user IDs)
+        select: "-password", // Exclude the password field from user data
+      })
+      .populate({
+        path: "dislikes", // Populate the 'dislikes' field (an array of user IDs)
+        select: "-password", // Exclude the password field from user data
+      });
+
+    // Return success response with populated user details
+    res.status(200).json({
+      message: "Post liked successfully",
+      likes: populatedPost.likes.length,
+      dislikes: populatedPost.dislikes.length,
+      likedBy: populatedPost.likes, // User details who liked the post
+      dislikedBy: populatedPost.dislikes, // User details who disliked the post
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Backend route to add a comment
+export const addComment = async (req, res) => {
+  const { id } = req.params; // Get the postId from the request parameters
+  const { content } = req.body; // Get the comment content from the request body
+  const userId = req.user._id; // Get the user ID from the request (assuming user is authenticated)
+
+  try {
+    // Find the post by ID
+    const post = await CreatePost.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Create the new comment
+    const newComment = {
+      userId,
+      content,
+      createdAt: new Date(),
+    };
+
+    // Add the comment to the post's comments array
+    post.comments.push(newComment);
+
+    // Save the updated post
+    await post.save();
+
+    // Return the updated post with the new comment
+    res.status(201).json({
+      message: "Comment added successfully",
+      post: {
+        _id: post._id,
+        comments: post.comments,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

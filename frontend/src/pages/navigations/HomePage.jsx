@@ -4,7 +4,7 @@ import CreatePost from "../../components/createPost/CreatePost";
 import Post from "../../components/post/Post";
 import SideBar from "../../components/sidebar/SideBar";
 
-const HomePage = ({ userData, setNav, nearbyEntities }) => {
+const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser }) => {
   const [posts, setPosts] = useState([]);
 
   // Function to handle post creation
@@ -49,19 +49,18 @@ const HomePage = ({ userData, setNav, nearbyEntities }) => {
     fetchFollowingUsersPost();
   }, []);
 
+
   return (
     <div className="homePage-wrapper">
-      <SideBar
-        setNav={setNav}
-        userData={userData}
-        nearbyEntities={nearbyEntities}
-      />
-
       <div className="content">
         <CreatePost userData={userData} onPostCreated={handlePostCreated} />
         <div className="homePage-post-wrapper">
           {posts?.map((post, index) => (
-            <Post key={index} post={post} onPostDeleted={handlePostDeleted} />
+            <Post
+              setSelectedUser={setSelectedUser}
+              key={index}
+              post={post}
+              onPostDeleted={handlePostDeleted} />
           ))}
         </div>
       </div>

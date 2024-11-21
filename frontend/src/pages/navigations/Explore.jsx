@@ -33,7 +33,7 @@ const Explore = ({ nearbyEntities, userData }) => {
 
     return (
         <div className="explore-wrapper">
-            <SideBar userData={userData} nearbyEntities={nearbyEntities} />
+            {/* <SideBar userData={userData} nearbyEntities={nearbyEntities} /> */}
             <div className="explorePosts-wrapper">
                 {allPosts.map((post) => (
                     <Post key={post._id} post={post} />  // Added the return and key prop

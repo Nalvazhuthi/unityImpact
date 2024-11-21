@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, format } from "date-fns";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 import toast from "react-hot-toast";
+import { useUser } from "../../store/UserProvider";
 
-const Post = ({ post, onPostDeleted }) => {
+const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
+  const { userData } = useUser();  // Access the global user data
+
   let [deleteConfimation, setDeleteConfimation] = useState(false);
+  const [comments, setComments] = useState([]);  // State to store comments
+  const [newComment, setNewComment] = useState("");  // State to track new comment input
+  const [commentCount, setCommentCount] = useState(post.comments.length); // State to track comment count
+  const [showComments, setShowComments] = useState(false); // State to track visibility of comments
   const createdAtDate = new Date(post.createdAt);
   let timeDistance = formatDistanceToNow(createdAtDate);
 
@@ -25,7 +32,6 @@ const Post = ({ post, onPostDeleted }) => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            // "Authorization": ``, // If you're using JWT auth
           },
           credentials: "include", // Ensure cookies are included if using sessions
         }
@@ -38,15 +44,122 @@ const Post = ({ post, onPostDeleted }) => {
         onPostDeleted(postId);
         toast.success("Post deleted successfully");
       } else {
+        toast.error(data.message || 'Failed to delete post');
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error('Error deleting post');
+    }
+  };
+
+  // State to track the number of likes
+  const [likesCount, setLikesCount] = useState(post.likes.length);
+  const [liked, setLiked] = useState(post.likes.includes(userData._id));  // Track if the current user has liked the post
+
+  const likeDislike = async (id) => {
+    try {
+      // Optimistic update: immediately update the UI
+      setLiked(!liked);  // Toggle liked state
+      setLikesCount(liked ? likesCount - 1 : likesCount + 1); // Update the like count
+
+      let response = await fetch(`http://localhost:4100/user/likeDisLike/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Server responded successfully, keep the optimistic update
+        toast.success('Post liked successfully');
+      } else {
+        // If the server fails, revert the UI update
+        setLiked(liked);
+        setLikesCount(liked ? likesCount + 1 : likesCount - 1);
+        toast.error(result.message || 'Failed to update like');
+      }
+    } catch (error) {
+      // If an error occurs, revert the UI update
+      setLiked(liked);
+      setLikesCount(liked ? likesCount + 1 : likesCount - 1);
+      toast.error('Error while liking the post');
+    }
+  };
+
+  // Fetch comments when the post is rendered or updated
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4100/user/comment/${post._id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+
+      const data = await response.json();
+      
+
+      if (!response.ok) {
+        toast.error(data.message || 'Failed to fetch comments');
+        return;
+      }
+
+      setComments(data.post.comments);
+      setCommentCount(data.post.comments.length);  // Update the comment count
+    } catch (error) {
+      toast.error('Error fetching comments');
+    }
+  };
+
+  const addComment = async () => {
+    if (!newComment.trim()) {
+      toast.error("Please enter a comment");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4100/user/comment/${post._id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: newComment }),
+          credentials: 'include',
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Optimistically add the new comment to the UI
+        setComments([data.post.comments[0], ...comments]);
+        setNewComment(""); // Clear the comment input
+        setCommentCount(commentCount + 1);  // Increment the comment count
+        toast.success('Comment added successfully');
+      } else {
+        toast.error(data.message || 'Failed to add comment');
+      }
+    } catch (error) {
+      toast.error('Error adding comment');
+    }
   };
 
   return (
     <div className="post-wrapper">
       <div className="post-header">
         <div className="post-header-wrapper flex-sb">
-          <div className="img-container">
+          <div className="img-container" onClick={() => {
+            setSelectedUser(post.userId._id);
+            setNav("profilePost");
+          }}>
             <img src={post.userId.profileImage || defaultImage} alt="" />
           </div>
           <div className="userDeails">
@@ -55,20 +168,28 @@ const Post = ({ post, onPostDeleted }) => {
           </div>
         </div>
 
-        <div className="delete" onClick={() => setDeleteConfimation(true)}>
-          Delete
-        </div>
+        {userData._id === post.userId._id && (
+          <div className="delete" onClick={() => setDeleteConfimation(true)}>
+            Delete
+          </div>
+        )}
 
         {deleteConfimation && (
-          <div className="confimationPopUp">
-            Are you sure want to delete the post
-            <div className="buttonContainer">
-              <button>Cancel</button>
-              <button onClick={() => deletePost(post._id)}>Confirm</button>
+          <div className="confimationPopUp-wrapper">
+            <div className="confimationPopUp">
+              Are you sure want to delete the post
+              <div className="buttonContainer">
+                <button onClick={() => setDeleteConfimation(false)}>Cancel</button>
+                <button onClick={() => {
+                  deletePost(post._id);
+                  setDeleteConfimation(false);
+                }}>Confirm</button>
+              </div>
             </div>
           </div>
         )}
       </div>
+
       <div className="post-body">
         <p className="message">{post.message}</p>
         <div className="post-images">
@@ -77,6 +198,49 @@ const Post = ({ post, onPostDeleted }) => {
           ))}
         </div>
       </div>
+
+      <div className="likeComment-wrapper">
+        <button onClick={() => likeDislike(post._id)}>
+          Like {likesCount > 0 && `(${likesCount})`}
+        </button>
+        <button onClick={() => {
+          setShowComments(!showComments);
+          if (!showComments) {
+            fetchComments(); // Fetch comments if showing them
+          }
+        }}>
+          Comment ({commentCount})
+        </button>
+      </div>
+
+      {/* Comments Section */}
+      {showComments && (
+        <div className="comments-section">
+          <div className="add-comment">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+            />
+            <button onClick={() => addComment(post._id)}>Post Comment</button>
+          </div>
+
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment._id} className="comment">
+                <div className="comment-user">
+                  <img src={comment.userId.profileImage || defaultImage} alt="" />
+                  <p>{comment.userId.fullName}</p>
+                </div>
+                <p>{comment.content}</p>
+                <p className="comment-time">{formatDistanceToNow(new Date(comment.createdAt))} ago</p>
+              </div>
+            ))
+          ) : (
+            <p>No comments yet.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

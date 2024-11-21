@@ -32,7 +32,6 @@
         height: 100%;
         border-radius: 12px;
         background-color: transparent !important;
-        border-radius: 12px;
       }
 
       .emoji {
@@ -52,8 +51,7 @@
       align-items: center;
       gap: 20px;
 
-      .create-post-content {
-      }
+      .create-post-content {}
     }
   }
 
@@ -90,7 +88,7 @@
 .createPost-wrapper {
   width: 100%;
   //   max-width: 600px;
-  padding: 20px;
+  // padding: 20px;
 
   border-radius: 8px;
 }

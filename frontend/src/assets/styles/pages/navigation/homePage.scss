@@ -1,11 +1,19 @@
 .homePage-wrapper,
 .explore-wrapper,
 .ProfilePost {
+  width: 100%;
   height: 100%;
-  padding: 20px;
+  // padding: 20px;
   display: flex;
   // flex-direction: column;
+  background-color: $fullBgColor;
   gap: 20px;
+
+  border-radius: $profile-border-radius;
+  box-shadow: $profile-card-shadow;
+
+  padding: 20px;
+  overflow-y: auto;
 
   .leftSideWrapper,
   .content {
@@ -16,6 +24,7 @@
     flex-direction: column;
     gap: 20px;
     overflow: auto;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -140,7 +149,18 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+
       // overflow-y: auto;
+      .confimationPopUp-wrapper {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgb(225 225 225 / 60%);
+
+      }
+
       .confimationPopUp {
         position: absolute;
         top: 50%;
@@ -149,6 +169,8 @@
         background-color: $fullBgColor;
         box-shadow: $shadow-main;
         padding: 20px 30px;
+        border-radius: 8px;
+
         .buttonContainer {
           display: flex;
           justify-content: space-around;
@@ -159,8 +181,23 @@
         display: none;
       }
 
-      .explorePosts-wrapper {
-        overflow-x: auto;
+
+
+    }
+  }
+
+  .profile-wrapper {
+    width: 100%;
+
+    .posts-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .posts {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
     }
   }
