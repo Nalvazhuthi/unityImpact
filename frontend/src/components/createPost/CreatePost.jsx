@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Emoji } from "../../assets/images/svgExports";
 import toast from "react-hot-toast";
 import EmojiPicker from "emoji-picker-react"; // Corrected import
+import { useUser } from "../../store/UserProvider";
 
-const CreatePost = ({ userData, onPostCreated }) => {
+const CreatePost = ({ onPostCreated }) => {
+  const { userData } = useUser();  // Access the global user data
+
   const [visibility, setVisibility] = useState("public");
   const [uploadedAssets, setUploadedAssets] = useState({
     images: [],
@@ -22,7 +25,7 @@ const CreatePost = ({ userData, onPostCreated }) => {
 
   const handleEmojiClick = (emojiObject) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji); // Append selected emoji to the message
-    setEmojiPopupVisible(false); // Hide the emoji picker after selecting an emoji
+    // setEmojiPopupVisible(false); // Hide the emoji picker after selecting an emoji
   };
 
   const convertToBase64 = (file) => {
@@ -78,7 +81,7 @@ const CreatePost = ({ userData, onPostCreated }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:4100/user/createPost", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/createPost`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,6 +112,34 @@ const CreatePost = ({ userData, onPostCreated }) => {
     message.trim() === "" &&
     uploadedAssets.images.length === 0 &&
     uploadedAssets.videos.length === 0;
+
+
+
+  useEffect(() => {
+    // Function to close the emoji popup when clicking outside
+    const handleClickOutside = (event) => {
+      // Check if the click target is outside the elements with the specified class names
+      const emojiPopup = document.querySelector('.emoji');
+      const button = document.querySelector('.emoji-popup');
+
+      if (
+        emojiPopup && !emojiPopup.contains(event.target) &&
+        button && !button.contains(event.target)
+      ) {
+        setEmojiPopupVisible(false);  // Close the popup if clicked outside
+      }
+    };
+
+    // Add event listener to handle clicks outside the popup
+    document.addEventListener('click', handleClickOutside);
+
+    // Cleanup the event listener when component is unmounted or re-rendered
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+
 
   return (
     <div className="createPost-wrapper">
@@ -142,22 +173,22 @@ const CreatePost = ({ userData, onPostCreated }) => {
       <div className="create-post-content">
         <div className="create-post-content-wrapper">
           <div className="create-post-content flex-sb">
-            <div
+            <button
               className="create-post-image-container"
               onClick={() =>
                 document.getElementById("image-upload-input").click()
               }
             >
-              Upload Image
-            </div>
-            <div
+              Image
+            </button>
+            <button
               className="create-post-video-container"
               onClick={() =>
                 document.getElementById("video-upload-input").click()
               }
             >
-              Upload Video
-            </div>
+              Video
+            </button>
           </div>
 
           <input
@@ -194,44 +225,44 @@ const CreatePost = ({ userData, onPostCreated }) => {
 
         {(uploadedAssets.images.length > 0 ||
           uploadedAssets.videos.length > 0) && (
-          <div className="uploadedAssetPreview">
-            {uploadedAssets.images.length > 0 && (
-              <div className="image-preview-container">
-                {uploadedAssets.images.map((imageUrl, index) => (
-                  <div key={index} className="image-preview-item">
-                    <img
-                      src={imageUrl}
-                      alt={`Uploaded Image ${index + 1}`}
-                      className="image-preview"
-                    />
-                    <button
-                      className="remove-image-btn"
-                      onClick={() => handleAssetRemove("images", imageUrl)}
-                    >
-                      -
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="uploadedAssetPreview">
+              {uploadedAssets.images.length > 0 && (
+                <div className="image-preview-container">
+                  {uploadedAssets.images.map((imageUrl, index) => (
+                    <div key={index} className="image-preview-item">
+                      <img
+                        src={imageUrl}
+                        alt={`Uploaded Image ${index + 1}`}
+                        className="image-preview"
+                      />
+                      <button
+                        className="remove-image-btn"
+                        onClick={() => handleAssetRemove("images", imageUrl)}
+                      >
+                        -
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {uploadedAssets.videos.length > 0 && (
-              <div className="video-preview-container">
-                {uploadedAssets.videos.map((videoUrl, index) => (
-                  <div key={index} className="video-preview-item">
-                    <video src={videoUrl} controls className="video-preview" />
-                    <button
-                      className="remove-video-btn"
-                      onClick={() => handleAssetRemove("videos", videoUrl)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+              {uploadedAssets.videos.length > 0 && (
+                <div className="video-preview-container">
+                  {uploadedAssets.videos.map((videoUrl, index) => (
+                    <div key={index} className="video-preview-item">
+                      <video src={videoUrl} controls className="video-preview" />
+                      <button
+                        className="remove-video-btn"
+                        onClick={() => handleAssetRemove("videos", videoUrl)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
       </div>
 
       <button onClick={handlePostSubmit} disabled={isPostDisabled}>

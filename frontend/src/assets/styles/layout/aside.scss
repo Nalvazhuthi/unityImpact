@@ -37,7 +37,7 @@
             gap: 0px;
 
             .userFullName {
-                font-size: 18px;
+                font-size: $font-size-title;
                 font-weight: 600;
             }
 
@@ -49,7 +49,7 @@
         }
 
         .userType {
-            font-size: 14px;
+            font-size: $font-size-title;
             color: $battleship-gray;
             font-weight: 600;
         }
@@ -75,7 +75,7 @@
         }
 
         h1 {
-            font-size: 26px;
+            font-size: $font-size-header;
         }
 
         .entitiers-wrapper {
@@ -101,7 +101,7 @@
                 width: 40%;
 
                 .userName {
-                    font-size: 15px;
+                    font-size: $font-size-title;
                     font-weight: 500;
                 }
 

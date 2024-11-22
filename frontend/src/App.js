@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const res = await fetch("http://localhost:4100/auth/me", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/me`, {
           method: "GET",
           credentials: "include", // Ensure cookies are sent with the request
         });

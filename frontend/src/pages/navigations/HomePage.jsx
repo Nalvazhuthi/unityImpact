@@ -9,7 +9,8 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
 
   // Function to handle post creation
   const handlePostCreated = (newPost) => {
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
+    // Optimistic update or fetch the posts again
+    setPosts((prevPosts) => [newPost, ...prevPosts]); // This ensures the new post is displayed
   };
 
   // Function to handle post deletion (update state after delete)
@@ -20,7 +21,7 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
   // Function to fetch posts of users you follow
   const fetchFollowingUsersPost = async () => {
     try {
-      const response = await fetch("http://localhost:4100/user/followingPost", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/followingPost`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -69,3 +70,6 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
 };
 
 export default HomePage;
+
+
+

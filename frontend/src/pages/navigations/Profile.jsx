@@ -54,7 +54,7 @@ const Profile = ({ userData }) => {
                 coordinates: editedData.location.coordinates || [0, 0],
             } : null;
 
-            const response = await fetch('http://localhost:4100/user/edituserData', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/edituserData`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
     ChatIcon,
     ExploreIcon,
+    Hamburger,
     HomeIcon,
     Logout,
     NotificationIcon,
@@ -9,14 +10,15 @@ import {
 } from "../../assets/images/svgExports";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 
-const Navigation = ({ nav, setNav, userData }) => {
+const Navigation = ({ nav, setNav, userData, sideBarOpen, setSideBarOpen }) => {
+    const [openNav, setOpenNav] = useState(false)
     // Function to handle the click event and set the active navigation item
     const handleNavClick = (nav) => {
         setNav(nav);
     };
     const handleLogout = async () => {
         try {
-            const response = await fetch("http://localhost:4100/auth/logout", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/logout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,8 +41,9 @@ const Navigation = ({ nav, setNav, userData }) => {
     };
     return (
         <div className="navigation-wrapper">
+            <div className="sideBarOpen" onClick={() => setSideBarOpen(!sideBarOpen)}>Sidebar</div>
             <div className="logo">LOGO</div>
-            <div className="navigate">
+            <div className={`navigate ${openNav ? "navOpen" : "navClose"}`}>
                 <span
                     className={`nav ${nav === "home" ? "active" : ""}`}
                     onClick={() => handleNavClick("home")}
@@ -78,20 +81,29 @@ const Navigation = ({ nav, setNav, userData }) => {
                     <SettingsIcon fill={nav === "profile" ? "#ffffff" : "#292D32"} />
                     <span>SETTINGS</span>
                 </span>
+                <span
+                    className={`logout nav ${nav === "logout" ? "active" : ""}`}
+                    onClick={() => {
+                        setNav("logout");
+                        handleLogout(); // Correctly calling the function here
+                    }}
+                >
+                    <Logout fill={nav === "logout" ? "#ffffff" : "#292D32"} />
+                    <span>Logout</span>
+                </span>
             </div>
 
-            {/* <div className="userDetails">
-        <div className="profileImage">
-          <img src={userData.profileImage || defaultImage} alt="profile" />
-        </div>
-        <div className="userName">{userData.fullName}</div>
-      </div> */}
             <button onClick={handleLogout}>
                 <div className="logout">Logout</div>
-                <div className="icon"><Logout /></div>
+                <div className="icon"><Logout fill={"#ffffff"} /></div>
             </button>
+            <div className="hamburger" onClick={() => setOpenNav(!openNav)}><Hamburger /></div>
+
         </div>
     );
 };
 
 export default Navigation;
+
+
+

@@ -52,6 +52,12 @@
       gap: 20px;
 
       .create-post-content {}
+
+      button {
+        color: black ;
+        background-color: transparent;
+        font-weight: 500;
+      }
     }
   }
 
@@ -74,13 +80,13 @@
 }
 
 .publicPrivate label {
-  font-size: 14px;
+  font-size: $font-size-default;
   margin-right: 10px;
 }
 
 .publicPrivate select {
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: $font-size-default;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -141,7 +147,7 @@
   padding: 5px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: $font-size-header;
 }
 
 .remove-image-btn:hover {
@@ -155,7 +161,7 @@
 
 .visibility-dropdown {
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: $font-size-default;
   border: 1px solid #ddd;
   border-radius: 4px;
 }

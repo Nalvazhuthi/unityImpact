@@ -18,12 +18,14 @@ const Dashboard = () => {
   const [selecteduser, setSelectedUser] = useState("");
   const [userPosts, setUserPosts] = useState([]); // Ensure it's initialized as an empty array
   const { userData, setUserData } = useUser();  // Access the global user data
+  const [sideBarOpen, setSideBarOpen] = useState(false);  // Corrected line
+
 
   // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch("http://localhost:4100/auth/me", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/me`, {
           method: "GET",
           credentials: "include",
         });
@@ -53,7 +55,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchNearbyEntities = async () => {
       try {
-        const res = await fetch("http://localhost:4100/user/nearMe", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/nearMe`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +80,7 @@ const Dashboard = () => {
     if (!selecteduser) return; // Prevent API call if no user is selected
 
     try {
-      const response = await fetch(`http://localhost:4100/user/profile/${selecteduser}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/profile/${selecteduser}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -111,9 +113,10 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <Navigation nav={nav} setNav={setNav} userData={userData} />
+      <Navigation nav={nav} setNav={setNav} userData={userData} sideBarOpen={sideBarOpen} setSideBarOpen={setSideBarOpen} />
       <div className="navigations-result">
         <SideBar
+          sideBarOpen={sideBarOpen}
           setNav={setNav}
           userData={userData}
           nearbyEntities={nearbyEntities}
@@ -144,6 +147,8 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
 
 
 

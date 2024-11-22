@@ -25,6 +25,7 @@ $profile-height: 100%; // Full height of the viewport
     display: flex;
     flex-direction: column;
     margin: 0 auto;
+
     .profile-header {
         flex-direction: column;
         margin-bottom: 20px;
@@ -75,7 +76,7 @@ $profile-height: 100%; // Full height of the viewport
                 background-color: #e4e4e4;
                 border-radius: 50%;
                 color: $profile-subtext-color;
-                font-size: 12px;
+                font-size: $font-size-small;
                 font-weight: bold;
             }
         }
@@ -88,14 +89,14 @@ $profile-height: 100%; // Full height of the viewport
             flex-direction: column;
 
             .name {
-                font-size: 22px;
+                font-size: $font-size-header;
                 font-weight: bold;
                 color: $profile-text-color;
                 margin-bottom: 8px;
             }
 
             .email {
-                font-size: 16px;
+                font-size: $font-size-title;
                 color: $profile-subtext-color;
                 margin-bottom: 4px;
                 word-break: break-word;
@@ -108,14 +109,14 @@ $profile-height: 100%; // Full height of the viewport
         flex-direction: column;
 
         .bio-title {
-            font-size: 18px;
+            font-size: $font-size-title;
             font-weight: bold;
             color: $profile-text-color;
             margin-bottom: 10px;
         }
 
         .bio {
-            font-size: 14px;
+            font-size: $font-size-default;
             color: $profile-subtext-color;
             line-height: 1.5;
             word-wrap: break-word;
@@ -126,7 +127,7 @@ $profile-height: 100%; // Full height of the viewport
         margin-bottom: 20px;
 
         .location {
-            font-size: 14px;
+            font-size: $font-size-default;
             color: $profile-subtext-color;
             line-height: 1.5;
         }
@@ -141,14 +142,14 @@ $profile-height: 100%; // Full height of the viewport
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
         h4 {
-            font-size: 18px;
+            font-size: $font-size-title;
             font-weight: bold;
             color: $profile-text-color;
             margin-bottom: 10px;
         }
 
         .content-text {
-            font-size: 14px;
+            font-size: $font-size-title;
             color: $profile-subtext-color;
             line-height: 1.6;
         }
@@ -167,13 +168,39 @@ $profile-height: 100%; // Full height of the viewport
             padding: 8px 16px;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: $font-size-title;
             cursor: pointer;
             transition: background-color 0.3s ease;
 
             &:hover {
-                background-color: darken($profile-hover-color, 10%);
+                // background-color: darken($profile-hover-color, 10%);
             }
         }
     }
 }
+
+
+
+
+@media (max-width: 768px) {
+    .navigations-result {
+        .leftSideWrapper {
+            display: none;
+        }
+
+        .responsive {
+            display: flex;
+            position: absolute;
+            background-color: $fullBgColor;
+            z-index: 10;
+            // display: none;
+            height: calc(100% - 100px);
+            width: 40%;
+
+        }
+    }
+
+}
+
+
+@media (max-width: 480px) {}

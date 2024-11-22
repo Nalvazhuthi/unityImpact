@@ -77,11 +77,19 @@ input {
   background-color: #fff !important;
 }
 
+
+button {
+  &:hover {
+    background-color: rgb(2, 80, 153);
+
+  }
+}
+
 button[type="submit"] {
   width: 100%;
   background-color: $dodger-blue;
   color: $primary-color;
-  font-size: 12px;
+  font-size: $font-size-small;
 
   &:hover {
     background-color: rgb(9, 113, 211);

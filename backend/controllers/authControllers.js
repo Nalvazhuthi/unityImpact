@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"; // You'll need to install jsonwebtoken (npm install jsonwebtoken)
 import User from "../models/signupModels/User.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie .js";
 

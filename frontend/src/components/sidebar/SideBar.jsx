@@ -1,18 +1,18 @@
 import React from "react";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 
-const SideBar = ({ userPosts, setNav, userData, nearbyEntities, setSelectedUser }) => {
+const SideBar = ({ userPosts, setNav, userData, nearbyEntities, setSelectedUser, sideBarOpen }) => {
   // Function to handle click on a particular entity
   const handleEntityClick = (entityId) => {
     setNav("profilePost");
-    
+
     // Log userPosts to check if it's passed correctly
-    
+
     setSelectedUser(entityId); // Set selected user
   };
 
   return (
-    <div className="leftSideWrapper">
+    <div className={`leftSideWrapper ${sideBarOpen && "responsive"}`}>
       <div className="userDetails flex">
         <div className="userImage">
           <img src={userData.profileImage} alt="User Profile" />

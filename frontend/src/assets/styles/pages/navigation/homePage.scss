@@ -15,6 +15,10 @@
   padding: 20px;
   overflow-y: auto;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   .leftSideWrapper,
   .content {
     // flex-grow: 1;
@@ -57,7 +61,7 @@
         gap: 0px;
 
         .userFullName {
-          font-size: 18px;
+          font-size: $font-size-title;
           font-weight: 600;
         }
 
@@ -69,7 +73,7 @@
       }
 
       .userType {
-        font-size: 14px;
+        font-size: $font-size-title;
         color: $battleship-gray;
         font-weight: 600;
       }
@@ -95,7 +99,7 @@
       }
 
       h1 {
-        font-size: 26px;
+        font-size: $font-size-header;
       }
 
       .entitiers-wrapper {
@@ -121,7 +125,7 @@
           width: 40%;
 
           .userName {
-            font-size: 15px;
+            font-size: $font-size-title;
             font-weight: 500;
           }
 
@@ -170,7 +174,7 @@
         box-shadow: $shadow-main;
         padding: 20px 30px;
         border-radius: 8px;
-
+        width: max-content;
         .buttonContainer {
           display: flex;
           justify-content: space-around;
@@ -193,6 +197,10 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+
+      h2 {
+        font-size: $font-size-header;
+      }
 
       .posts {
         display: flex;
@@ -227,11 +235,11 @@
 
     .userDetail {
       .userFullName {
-        font-size: 16px;
+        font-size: $font-size-title;
       }
 
       .userEmail {
-        font-size: 14px;
+        font-size: $font-size-title;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -280,11 +288,11 @@
 
     .userDetail {
       .userFullName {
-        font-size: 14px;
+        font-size: $font-size-title;
       }
 
       .userEmail {
-        font-size: 12px;
+        font-size: $font-size-small;
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -316,7 +324,7 @@
   top: 10px;
   right: 10px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: $font-size-header;
   color: #007bff;
   /* Blue color for emoji button */
 }
@@ -354,7 +362,7 @@
   width: 100%;
   // padding: 5px;
   padding-left: 29px !important;
-  font-size: 14px;
+  font-size: $font-size-title;
   border: 1px solid #ccc;
   border-radius: 5px;
   outline: none;
@@ -425,3 +433,45 @@ epr-skin-tones,
 .epr_qyh4cg {
   display: none;
 }
+
+
+
+.epr-body {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.epr-search-container {
+  height: 30px !important;
+}
+
+.epr-skin-tones {
+  display: none !important;
+}
+
+button {
+  &:hover {
+    // background-color: transparent;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .homePage-wrapper {
+    .content {
+      .createPost-wrapper {
+        .emoji-popup {
+          width: 80% !important;
+
+          aside {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media (max-width: 480px) {}

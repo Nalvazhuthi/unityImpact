@@ -7,7 +7,7 @@ const Explore = ({ nearbyEntities, userData }) => {
 
     const handleFetchpost = async () => {
         try {
-            const response = await fetch("http://localhost:4100/user/allPosts", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/allPosts`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

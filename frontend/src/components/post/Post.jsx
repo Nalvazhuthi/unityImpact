@@ -3,6 +3,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 import toast from "react-hot-toast";
 import { useUser } from "../../store/UserProvider";
+import { Comment, Delete, Like } from "../../assets/images/svgExports";
 
 const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
   const { userData } = useUser();  // Access the global user data
@@ -27,7 +28,7 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
   const deletePost = async (postId) => {
     try {
       const response = await fetch(
-        `http://localhost:4100/user/delete/${postId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/delete/${postId}`,
         {
           method: "DELETE",
           headers: {
@@ -61,7 +62,7 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       setLiked(!liked);  // Toggle liked state
       setLikesCount(liked ? likesCount - 1 : likesCount + 1); // Update the like count
 
-      let response = await fetch(`http://localhost:4100/user/likeDisLike/${id}`, {
+      let response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/likeDisLike/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
   const fetchComments = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4100/user/comment/${post._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/comment/${post._id}`,
         {
           method: 'GET',
           headers: {
@@ -103,7 +104,7 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       );
 
       const data = await response.json();
-      
+
 
       if (!response.ok) {
         toast.error(data.message || 'Failed to fetch comments');
@@ -125,7 +126,7 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:4100/user/comment/${post._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/comment/${post._id}`,
         {
           method: 'POST',
           headers: {
@@ -156,21 +157,28 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
     <div className="post-wrapper">
       <div className="post-header">
         <div className="post-header-wrapper flex-sb">
-          <div className="img-container" onClick={() => {
-            setSelectedUser(post.userId._id);
-            setNav("profilePost");
-          }}>
-            <img src={post.userId.profileImage || defaultImage} alt="" />
+          <div
+            className="img-container"
+            onClick={() => {
+              setSelectedUser(post.userId?._id);  // Ensure post.userId exists
+              setNav("profilePost");
+            }}
+          >
+            <img
+              src={post.userId?.profileImage || defaultImage} // Use defaultImage if profileImage is missing
+              alt={post.userId?.fullName || "User"}  // Use default text if fullName is missing
+            />
           </div>
           <div className="userDeails">
-            <p>{post.userId.fullName}</p>
+            <p>{post.userId?.fullName || "Unknown User"}</p> {/* Fallback text */}
             <p>{fullDate}</p>
           </div>
         </div>
 
+
         {userData._id === post.userId._id && (
           <div className="delete" onClick={() => setDeleteConfimation(true)}>
-            Delete
+            <Delete />
           </div>
         )}
 
@@ -200,18 +208,20 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       </div>
 
       <div className="likeComment-wrapper">
-        <button onClick={() => likeDislike(post._id)}>
-          Like {likesCount > 0 && `(${likesCount})`}
-        </button>
-        <button onClick={() => {
+        <div className={`like ${liked && "active"}`} onClick={() => likeDislike(post._id)}>
+          {/* Correct the fill color logic based on the liked state */}
+          <Like fill={liked ? "red" : "black"} /> {likesCount > 0 && `(${likesCount})`}
+        </div>
+        <div onClick={() => {
           setShowComments(!showComments);
           if (!showComments) {
             fetchComments(); // Fetch comments if showing them
           }
         }}>
-          Comment ({commentCount})
-        </button>
+          <Comment /> ({commentCount})
+        </div>
       </div>
+
 
       {/* Comments Section */}
       {showComments && (

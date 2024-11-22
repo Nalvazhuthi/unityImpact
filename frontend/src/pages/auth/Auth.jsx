@@ -34,6 +34,7 @@ const Auth = ({ setIsAuthenticated }) => {
     }
   };
 
+  // Handle input field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -42,17 +43,20 @@ const Auth = ({ setIsAuthenticated }) => {
     }));
   };
 
+  // Handle form submission (login/signup)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { fullName, email, password, type, location } = formData;
 
+    // Validation for login
     if (isLogin) {
       if (!email || !password) {
         toast.error("Email and password are required.");
         return;
       }
     } else {
+      // Validation for signup
       if (!fullName || !email || !password || !type || !location) {
         toast.error("All fields are required.");
         return;
@@ -60,8 +64,8 @@ const Auth = ({ setIsAuthenticated }) => {
     }
 
     let url = isLogin
-      ? "http://localhost:4100/auth/login"
-      : "http://localhost:4100/auth/signup";
+      ? `${process.env.REACT_APP_BACKEND_URL}/auth/login`
+      : `${process.env.REACT_APP_BACKEND_URL}/auth/signup`;
 
     // Split location string into latitude and longitude
     const [latitude, longitude] = location.split(",").map(Number);
@@ -90,7 +94,7 @@ const Auth = ({ setIsAuthenticated }) => {
           localStorage.setItem("userData", JSON.stringify(data.user)); // Save user data in localStorage
           navigate("/home");
 
-          setIsAuthenticated(true);
+          setIsAuthenticated(true); // Set user as authenticated
         } else {
           setIsLogin(true); // Switch to login after successful signup
         }
