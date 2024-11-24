@@ -1,5 +1,6 @@
 import Invite from "../models/Invite.js";
 import CreatePost from "../models/postSchema.js";
+import Notification from "../models/notification.js"; // Assuming Notification model is in the correct directory
 import User from "../models/signupModels/User.js";
 import bcrypt from "bcryptjs";
 
@@ -423,6 +424,20 @@ export const likeAndDislike = async (req, res) => {
         select: "-password", // Exclude the password field from user data
       });
 
+    // Create a notification if the post was liked
+    console.log("post.likes.includes(userId)", post.likes.includes(userId));
+    if (!post.likes.includes(userId)) {
+      console.log("not");
+      const notification = new Notification({
+        from: userId, // The user who liked the post
+        to: post.user, // The user who posted the post
+        type: "like", // Type of notification
+      });
+
+      // Save the notification
+      await notification.save();
+    }
+
     // Return success response with populated user details
     res.status(200).json({
       message: "Post liked successfully",
@@ -438,8 +453,10 @@ export const likeAndDislike = async (req, res) => {
 };
 
 // Backend route to add a comment
+
+// Function to add a comment to a post
 export const addComment = async (req, res) => {
-  const { id } = req.params; // Get the postId from the request parameters
+  const { id } = req.params; // Get the post ID from the request parameters
   const { content } = req.body; // Get the comment content from the request body
   const userId = req.user._id; // Get the user ID from the request (assuming user is authenticated)
 
@@ -470,6 +487,33 @@ export const addComment = async (req, res) => {
         _id: post._id,
         comments: post.comments,
       },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Function to get comments for a post
+export const getPostComments = async (req, res) => {
+  const { id } = req.params; // Get the post ID from the URL parameters
+
+  try {
+    // Find the post and populate its comments with user details
+    const post = await CreatePost.findById(id)
+      .populate("userId", "fullName profileImage") // Populate user details for the post creator
+      .populate("comments.userId", "fullName profileImage") // Populate user details for each comment
+      .sort({ createdAt: -1 }); // Sort the posts by creation date, descending order (latest first)
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    post.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    console.log("post", post);
+    // Return the post with comments and populated user data
+    res.status(200).json({
+      post,
     });
   } catch (error) {
     console.error(error);

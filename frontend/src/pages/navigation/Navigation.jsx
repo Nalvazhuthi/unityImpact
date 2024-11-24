@@ -75,10 +75,10 @@ const Navigation = ({ nav, setNav, userData, sideBarOpen, setSideBarOpen }) => {
                     <span>NOTIFICATION</span>
                 </span>
                 <span
-                    className={`nav ${nav === "profile" ? "active" : ""}`}
-                    onClick={() => handleNavClick("profile")}
+                    className={`nav ${nav === "settings" ? "active" : ""}`}
+                    onClick={() => handleNavClick("settings")}
                 >
-                    <SettingsIcon fill={nav === "profile" ? "#ffffff" : "#292D32"} />
+                    <SettingsIcon fill={nav === "settings" ? "#ffffff" : "#292D32"} />
                     <span>SETTINGS</span>
                 </span>
                 <span

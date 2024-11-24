@@ -14,9 +14,9 @@ let app = express();
 let port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
-app.use(express.json()); // This ensures we can read JSON from the request body
-app.use(express.urlencoded({ extended: true })); // to parse form data(urlencoded)
 
+app.use(express.json({ limit: '10mb' })); // Increase limit for JSON payloads
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 app.use(
   cors({

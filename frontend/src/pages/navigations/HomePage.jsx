@@ -4,7 +4,13 @@ import CreatePost from "../../components/createPost/CreatePost";
 import Post from "../../components/post/Post";
 import SideBar from "../../components/sidebar/SideBar";
 
-const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser }) => {
+const HomePage = ({
+  userPosts,
+  userData,
+  setNav,
+  nearbyEntities,
+  setSelectedUser,
+}) => {
   const [posts, setPosts] = useState([]);
 
   // Function to handle post creation
@@ -21,17 +27,17 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
   // Function to fetch posts of users you follow
   const fetchFollowingUsersPost = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/followingPost`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/user/followingPost`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const data = await response.json();
-      console.log("API Response:", typeof data);
-
       if (response.ok) {
         if (Array.isArray(data.posts)) {
           setPosts(data.posts);
@@ -48,8 +54,7 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
 
   useEffect(() => {
     fetchFollowingUsersPost();
-  }, []);
-
+  }, [posts]);
 
   return (
     <div className="homePage-wrapper">
@@ -61,7 +66,8 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
               setSelectedUser={setSelectedUser}
               key={index}
               post={post}
-              onPostDeleted={handlePostDeleted} />
+              onPostDeleted={handlePostDeleted}
+            />
           ))}
         </div>
       </div>
@@ -70,6 +76,3 @@ const HomePage = ({ userPosts, userData, setNav, nearbyEntities, setSelectedUser
 };
 
 export default HomePage;
-
-
-

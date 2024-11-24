@@ -8,199 +8,159 @@ $profile-border-radius: 10px;
 $profile-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 $profile-height: 100%; // Full height of the viewport
 
-
-
-
-
 .navigations-result {
-    display: flex;
-    height: calc(100% - 60px);
-    padding: 20px;
-    gap: 20px;
+  display: flex;
+  height: calc(100% - 60px);
+  padding: 20px;
+  gap: 20px;
 }
 
-.profile-container {
-    // height: 100%;
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  flex: 1;
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    // width: 90%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .popup-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      object-fit: contain;
+    }
+  }
+
+  .profile-section {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+
+    .image-container {
+      position: relative;
+
+      .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+      }
+
+      .edit-image-label {
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        background: #fff;
+        border-radius: 50%;
+        padding: 5px;
+        margin: 0;
+        cursor: pointer;
+
+        .file-input {
+          display: none;
+        }
+      }
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      h2 {
+        font-size: $font-size-mainheader;
+      }
+      p {
+        font-size: $font-size-header;
+      }
+      .input-field {
+        margin: 5px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .password-section {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
+    gap: 10px;
 
-    .profile-header {
-        flex-direction: column;
-        margin-bottom: 20px;
-        gap: 20px;
-
-        .image-container {
-            width: 100px;
-            height: 100px;
-            // border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-
-            .edit-image-button {
-                position: absolute;
-                top: -25px;
-                right: -25px;
-                z-index: 10;
-                margin: 0;
-
-                .edit-button {
-                    padding: 15px;
-                    margin: 0;
-                    height: auto;
-                    // background-color: transparent;
-                    color: #fff;
-                    // background-color: #007bff;
-
-                }
-            }
-
-            label {
-                margin: 0;
-            }
-
-            .profile-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 50%;
-            }
-
-            .placeholder-image {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-                background-color: #e4e4e4;
-                border-radius: 50%;
-                color: $profile-subtext-color;
-                font-size: $font-size-small;
-                font-weight: bold;
-            }
-        }
-
-        .details {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-
-            .name {
-                font-size: $font-size-header;
-                font-weight: bold;
-                color: $profile-text-color;
-                margin-bottom: 8px;
-            }
-
-            .email {
-                font-size: $font-size-title;
-                color: $profile-subtext-color;
-                margin-bottom: 4px;
-                word-break: break-word;
-            }
-        }
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
-    .bio-container {
-        margin-bottom: 20px;
-        flex-direction: column;
-
-        .bio-title {
-            font-size: $font-size-title;
-            font-weight: bold;
-            color: $profile-text-color;
-            margin-bottom: 10px;
-        }
-
-        .bio {
-            font-size: $font-size-default;
-            color: $profile-subtext-color;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
+    .error {
+      color: red;
+      font-size: 0.9rem;
     }
+  }
 
-    .location-container {
-        margin-bottom: 20px;
+  .actions {
+    display: flex;
+    gap: 10px;
 
-        .location {
-            font-size: $font-size-default;
-            color: $profile-subtext-color;
-            line-height: 1.5;
-        }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &.logout {
+        background: red;
+        color: #fff;
+      }
     }
-
-    // New section for additional content (e.g., recent activities, settings, etc.)
-    .additional-content {
-        margin-bottom: 20px;
-        background-color: $profile-card-bg-color;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-        h4 {
-            font-size: $font-size-title;
-            font-weight: bold;
-            color: $profile-text-color;
-            margin-bottom: 10px;
-        }
-
-        .content-text {
-            font-size: $font-size-title;
-            color: $profile-subtext-color;
-            line-height: 1.6;
-        }
-    }
-
-    // Profile action buttons (Edit, Logout, etc.)
-    .profile-actions {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 30px;
-
-        button {
-            background-color: $profile-hover-color;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            font-size: $font-size-title;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-
-            &:hover {
-                // background-color: darken($profile-hover-color, 10%);
-            }
-        }
-    }
+  }
 }
 
 
 
-
+  
 @media (max-width: 768px) {
-    .navigations-result {
-        .leftSideWrapper {
-            display: none;
-        }
-
-        .responsive {
-            display: flex;
-            position: absolute;
-            background-color: $fullBgColor;
-            z-index: 10;
-            // display: none;
-            height: calc(100% - 100px);
-            width: 40%;
-
-        }
+  .navigations-result {
+    .leftSideWrapper {
+      display: none;
     }
 
+    .responsive {
+      display: flex;
+      position: absolute;
+      background-color: $fullBgColor;
+      z-index: 10;
+      // display: none;
+      height: calc(100% - 100px);
+      width: 40%;
+    }
+  }
 }
 
-
-@media (max-width: 480px) {}
+@media (max-width: 480px) {
+}

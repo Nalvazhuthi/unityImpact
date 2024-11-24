@@ -21,10 +21,13 @@ function App() {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/me`, {
-          method: "GET",
-          credentials: "include", // Ensure cookies are sent with the request
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/auth/me`,
+          {
+            method: "GET",
+            credentials: "include", // Ensure cookies are sent with the request
+          }
+        );
 
         if (res.ok) {
           // If the response is OK, set authenticated state to true
@@ -63,14 +66,14 @@ function App() {
               path="/"
               element={
                 isAuthenticated ? (
-                  <Navigate to="/home" />
+                  <Navigate to="/dashboard" />
                 ) : (
                   <Auth setIsAuthenticated={setIsAuthenticated} />
                 )
               }
             />
             <Route
-              path="/home"
+              path="/dashboard"
               element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
             />
           </Routes>

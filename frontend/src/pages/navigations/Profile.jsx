@@ -1,262 +1,217 @@
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';  // Import toast for notifications
-import { EditIconDefault } from '../../assets/images/svgExports';
+import React, { useState } from "react";
+import toast from "react-hot-toast"; // Import toast for notifications
+import { EditIconDefault } from "../../assets/images/svgExports";
 
-const Profile = ({ userData }) => {
-    const { fullName, email, bio, location, profileImage } = userData;
+const Settings = ({ userData }) => {
+  const { fullName, email, bio, location, profileImage } = userData;
 
-    // State to toggle between view and edit mode
-    const [isEditing, setIsEditing] = useState(false);
-    const [changePassword, setChangePassword] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // State for showing the popup
 
-    // State for editable profile data
-    const [editedData, setEditedData] = useState({
-        fullName,
-        email,
-        bio,
-        location,
-        profileImage,  // Include profileImage field
-    });
+  const [editedData, setEditedData] = useState({
+    fullName,
+    email,
+    bio,
+    location,
+    profileImage,
+  });
 
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
-    const [imageFile, setImageFile] = useState(null);  // State for holding the selected image
+  const handleEditClick = () => setIsEditing(!isEditing);
 
-    // Handler to toggle edit mode
-    const handleEditClick = () => {
-        setIsEditing(!isEditing);
-    };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageFile(reader.result);
+        setEditedData((prevData) => ({
+          ...prevData,
+          profileImage: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    // Handler for profile image upload
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImageFile(reader.result);  // Store the Base64 string in state
-                setEditedData((prevData) => ({
-                    ...prevData,
-                    profileImage: reader.result,  // Update the profileImage field in editedData
-                }));
-            };
-            reader.readAsDataURL(file);  // Convert the image to Base64
+  const handleSaveChanges = async () => {
+    try {
+      const updatedLocation = editedData.location
+        ? {
+            type: "Point",
+            coordinates: editedData.location.coordinates || [0, 0],
+          }
+        : null;
+
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/user/edituserData`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            ...editedData,
+            location: updatedLocation,
+          }),
         }
-    };
+      );
 
-    // Handle profile update
-    const handleSaveChanges = async () => {
-        try {
-            const updatedLocation = editedData.location ? {
-                type: "Point",
-                coordinates: editedData.location.coordinates || [0, 0],
-            } : null;
+      const result = await response.json();
 
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/edituserData`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    ...editedData,
-                    location: updatedLocation,
-                }),
-            });
+      if (response.ok) {
+        toast.success("Profile updated successfully");
+        setIsEditing(false);
+      } else {
+        toast.error(result.message || "Failed to update profile");
+      }
+    } catch (error) {
+      toast.error("Failed to update profile");
+      console.error(error);
+    }
+  };
 
-            const result = await response.json();
-
-            if (response.ok) {
-                toast.success('Profile updated successfully');
-                setIsEditing(false);
-            } else {
-                toast.error(result.message || 'Failed to update profile');
-            }
-        } catch (error) {
-            toast.error('Failed to update profile');
-            console.error(error);
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/user/changepassword`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            currentPassword,
+            newPassword,
+          }),
         }
-    };
+      );
 
-    // Other handlers (password change, etc.) ...
+      const result = await response.json();
 
-    return (
-        <div className="profile-container">
-            <div className="profile-header flex">
-                <div className="image-container">
-                    {/* Show the uploaded image if available */}
-                    {imageFile || profileImage ? (
-                        <img
-                            src={imageFile || profileImage}
-                            alt="Profile"
-                            className="profile-image"
-                        />
-                    ) : (
-                        <p>No image available</p> // Default text if no image
-                    )}
+      if (response.ok) {
+        toast.success("Password changed successfully");
+        setChangePassword(false);
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        toast.error(result.message || "Failed to change password");
+      }
+    } catch (error) {
+      toast.error("Failed to change password");
+      console.error(error);
+    }
+  };
 
-                    {/* Show the "Edit Profile" button only when in editing mode */}
-                    {isEditing && (
-                        <div className="edit-image-button">
-                            <input
-                                type="file"
-                                onChange={handleImageChange}
-                                accept="image/*"
-                                className="profile-image-input"
-                                style={{ display: 'none' }}
-                                id="file-upload"
-                            />
-                            <label htmlFor="file-upload" className="edit-button">
-                                <EditIconDefault />
-                                {/* edit */}
-                            </label>
-                        </div>
-                    )}
-                </div>
-                <div className="details flex">
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            name="fullName"
-                            value={editedData.fullName}
-                            onChange={(e) => setEditedData({ ...editedData, fullName: e.target.value })}
-                            className="name-input"
-                        />
-                    ) : (
-                        <h2 className="name">{editedData.fullName}</h2>
-                    )}
-                    {isEditing ? (
-                        <input
-                            type="email"
-                            name="email"
-                            value={editedData.email}
-                            onChange={(e) => setEditedData({ ...editedData, email: e.target.value })}
-                            className="email-input"
-                        />
-                    ) : (
-                        <p className="email">{editedData.email}</p>
-                    )}
-                </div>
-            </div>
-
-            <div className="bio-container flex">
-                <h3 className="bio-title">Bio:</h3>
-                {isEditing ? (
-                    <textarea
-                        name="bio"
-                        value={editedData.bio}
-                        onChange={(e) => setEditedData({ ...editedData, bio: e.target.value })}
-                        className="bio-input"
-                    />
-                ) : (
-                    <p className="bio">{editedData.bio}</p>
-                )}
-            </div>
-
-            <div className="location-container flex">
-                {isEditing ? (
-                    <div className="location-inputs">
-                        <input
-                            type="number"
-                            name="longitude"
-                            value={editedData.location ? editedData.location.coordinates[0] : ''}
-                            onChange={(e) => {
-                                const newCoordinates = [
-                                    e.target.value,
-                                    editedData.location?.coordinates[1] || '',
-                                ];
-                                setEditedData((prevData) => ({
-                                    ...prevData,
-                                    location: { ...prevData.location, coordinates: newCoordinates },
-                                }));
-                            }}
-                            placeholder="Longitude"
-                        />
-                        <input
-                            type="number"
-                            name="latitude"
-                            value={editedData.location ? editedData.location.coordinates[1] : ''}
-                            onChange={(e) => {
-                                const newCoordinates = [
-                                    editedData.location?.coordinates[0] || '',
-                                    e.target.value,
-                                ];
-                                setEditedData((prevData) => ({
-                                    ...prevData,
-                                    location: { ...prevData.location, coordinates: newCoordinates },
-                                }));
-                            }}
-                            placeholder="Latitude"
-                        />
-                    </div>
-                ) : (
-                    <p className="location">
-                        Location: Latitude: {editedData.location ? editedData.location.coordinates[1] : 'N/A'},
-                        Longitude: {editedData.location ? editedData.location.coordinates[0] : 'N/A'}
-                    </p>
-                )}
-            </div>
-
-            <div className="changePassword" onClick={() => setChangePassword(true)}>
-                Change Password
-            </div>
-
-            {/* Change Password Form */}
-            {changePassword && (
-                <div className="password-change-form">
-                    {/* Password fields and buttons */}
-                </div>
-            )}
-
-            {/* Profile action buttons */}
-            <div className="profile-actions">
-                {isEditing ? (
-                    <button onClick={handleSaveChanges}>Save Changes</button>
-                ) : (
-                    <button onClick={handleEditClick}>Edit Profile</button>
-                )}
-                <button>Log Out</button>
-            </div>
+  return (
+    <div className="settings-container">
+      {/* Profile Picture Popup */}
+      {showPopup && (
+        <div className="popup-overlay" onClick={() => setShowPopup(false)}>
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={imageFile || profileImage || "default-image-path"}
+              alt="Profile"
+              className="popup-image"
+            />
+          </div>
         </div>
-    );
+      )}
+
+      <div className="profile-section">
+        <div className="image-container">
+          <img
+            src={imageFile || profileImage || "default-image-path"}
+            alt="Profile"
+            className="profile-image"
+            onClick={() => setShowPopup(true)} // Open popup on click
+          />
+          {isEditing && (
+            <label htmlFor="file-upload" className="edit-image-label">
+              <EditIconDefault />
+              <input
+                type="file"
+                id="file-upload"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="file-input"
+              />
+            </label>
+          )}
+        </div>
+        <div className="details">
+          {isEditing ? (
+            <input
+              type="text"
+              value={editedData.fullName}
+              onChange={(e) =>
+                setEditedData({ ...editedData, fullName: e.target.value })
+              }
+              className="input-field"
+            />
+          ) : (
+            <h2>{editedData.fullName}</h2>
+          )}
+          {isEditing ? (
+            <input
+              type="email"
+              value={editedData.email}
+              onChange={(e) =>
+                setEditedData({ ...editedData, email: e.target.value })
+              }
+              className="input-field"
+            />
+          ) : (
+            <p>{editedData.email}</p>
+          )}
+        </div>
+      </div>
+      <div className="password-section">
+        <h3>Change Password</h3>
+        <input
+          type="password"
+          placeholder="Current Password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        {passwordError && <p className="error">{passwordError}</p>}
+        <button onClick={handleChangePassword}>Update Password</button>
+      </div>
+      <div className="actions">
+        {isEditing ? (
+          <button onClick={handleSaveChanges}>Save Changes</button>
+        ) : (
+          <button onClick={handleEditClick}>Edit Profile</button>
+        )}
+        <button className="logout">Log Out</button>
+      </div>
+    </div>
+  );
 };
 
-export default Profile;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default Settings;

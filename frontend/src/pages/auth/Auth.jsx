@@ -83,7 +83,7 @@ const Auth = ({ setIsAuthenticated }) => {
         },
         credentials: "include", // Include cookies for authentication
       });
-
+      console.log("response", response);
       const data = await response.json();
 
       if (response.ok) {
@@ -92,7 +92,7 @@ const Auth = ({ setIsAuthenticated }) => {
         // Store user data in localStorage if login/signup is successful
         if (isLogin) {
           localStorage.setItem("userData", JSON.stringify(data.user)); // Save user data in localStorage
-          navigate("/home");
+          navigate("/dashboard");
 
           setIsAuthenticated(true); // Set user as authenticated
         } else {

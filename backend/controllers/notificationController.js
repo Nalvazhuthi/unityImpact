@@ -1,7 +1,6 @@
 import Notification from "../models/notification.js";
 
 let getNotification = async (req, res) => {
-    console.log("ssdsadasdas");
   try {
     let userID = req.user.id;
     console.log("userID: ", userID);

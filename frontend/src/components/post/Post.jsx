@@ -3,14 +3,14 @@ import { formatDistanceToNow, format } from "date-fns";
 import defaultImage from "../../assets/images/temp/blankUser.png";
 import toast from "react-hot-toast";
 import { useUser } from "../../store/UserProvider";
-import { Comment, Delete, Like } from "../../assets/images/svgExports";
+import { Comment, Delete, Like, Send } from "../../assets/images/svgExports";
 
 const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
-  const { userData } = useUser();  // Access the global user data
+  const { userData } = useUser(); // Access the global user data
 
   let [deleteConfimation, setDeleteConfimation] = useState(false);
-  const [comments, setComments] = useState([]);  // State to store comments
-  const [newComment, setNewComment] = useState("");  // State to track new comment input
+  const [comments, setComments] = useState([]); // State to store comments
+  const [newComment, setNewComment] = useState(""); // State to track new comment input
   const [commentCount, setCommentCount] = useState(post.comments.length); // State to track comment count
   const [showComments, setShowComments] = useState(false); // State to track visibility of comments
   const createdAtDate = new Date(post.createdAt);
@@ -45,47 +45,50 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
         onPostDeleted(postId);
         toast.success("Post deleted successfully");
       } else {
-        toast.error(data.message || 'Failed to delete post');
+        toast.error(data.message || "Failed to delete post");
       }
     } catch (error) {
-      toast.error('Error deleting post');
+      toast.error("Error deleting post");
     }
   };
 
   // State to track the number of likes
   const [likesCount, setLikesCount] = useState(post.likes.length);
-  const [liked, setLiked] = useState(post.likes.includes(userData._id));  // Track if the current user has liked the post
+  const [liked, setLiked] = useState(post.likes.includes(userData._id)); // Track if the current user has liked the post
 
   const likeDislike = async (id) => {
     try {
       // Optimistic update: immediately update the UI
-      setLiked(!liked);  // Toggle liked state
+      setLiked(!liked); // Toggle liked state
       setLikesCount(liked ? likesCount - 1 : likesCount + 1); // Update the like count
 
-      let response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/likeDisLike/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/user/likeDisLike/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       const result = await response.json();
 
       if (response.ok) {
         // Server responded successfully, keep the optimistic update
-        toast.success('Post liked successfully');
+        toast.success("Post liked successfully");
       } else {
         // If the server fails, revert the UI update
         setLiked(liked);
         setLikesCount(liked ? likesCount + 1 : likesCount - 1);
-        toast.error(result.message || 'Failed to update like');
+        toast.error(result.message || "Failed to update like");
       }
     } catch (error) {
       // If an error occurs, revert the UI update
       setLiked(liked);
       setLikesCount(liked ? likesCount + 1 : likesCount - 1);
-      toast.error('Error while liking the post');
+      toast.error("Error while liking the post");
     }
   };
 
@@ -95,26 +98,25 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/user/comment/${post._id}`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
         }
       );
 
       const data = await response.json();
 
-
       if (!response.ok) {
-        toast.error(data.message || 'Failed to fetch comments');
+        toast.error(data.message || "Failed to fetch comments");
         return;
       }
 
       setComments(data.post.comments);
-      setCommentCount(data.post.comments.length);  // Update the comment count
+      setCommentCount(data.post.comments.length); // Update the comment count
     } catch (error) {
-      toast.error('Error fetching comments');
+      toast.error("Error fetching comments");
     }
   };
 
@@ -123,35 +125,38 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       toast.error("Please enter a comment");
       return;
     }
-
+  
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/user/comment/${post._id}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ content: newComment }),
-          credentials: 'include',
+          credentials: "include",
         }
       );
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
-        // Optimistically add the new comment to the UI
-        setComments([data.post.comments[0], ...comments]);
-        setNewComment(""); // Clear the comment input
-        setCommentCount(commentCount + 1);  // Increment the comment count
-        toast.success('Comment added successfully');
+        // Add the new comment to the state, including the full user details.
+        const updatedComment = data.post.comments[0]; // Newly added comment
+        setComments([updatedComment, ...comments]); // Add to the top of the comment list
+        setNewComment(""); // Clear the input field
+        setCommentCount(commentCount + 1); // Increment the comment count
+        toast.success("Comment added successfully");
       } else {
-        toast.error(data.message || 'Failed to add comment');
+        toast.error(data.message || "Failed to add comment");
       }
     } catch (error) {
-      toast.error('Error adding comment');
+      toast.error("Error adding comment");
     }
+    fetchComments()
   };
+  
 
   return (
     <div className="post-wrapper">
@@ -160,21 +165,21 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
           <div
             className="img-container"
             onClick={() => {
-              setSelectedUser(post.userId?._id);  // Ensure post.userId exists
+              setSelectedUser(post.userId?._id); // Ensure post.userId exists
               setNav("profilePost");
             }}
           >
             <img
               src={post.userId?.profileImage || defaultImage} // Use defaultImage if profileImage is missing
-              alt={post.userId?.fullName || "User"}  // Use default text if fullName is missing
+              alt={post.userId?.fullName || "User"} // Use default text if fullName is missing
             />
           </div>
           <div className="userDeails">
-            <p>{post.userId?.fullName || "Unknown User"}</p> {/* Fallback text */}
+            <p>{post.userId?.fullName || "Unknown User"}</p>{" "}
+            {/* Fallback text */}
             <p>{fullDate}</p>
           </div>
         </div>
-
 
         {userData._id === post.userId._id && (
           <div className="delete" onClick={() => setDeleteConfimation(true)}>
@@ -187,11 +192,17 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
             <div className="confimationPopUp">
               Are you sure want to delete the post
               <div className="buttonContainer">
-                <button onClick={() => setDeleteConfimation(false)}>Cancel</button>
-                <button onClick={() => {
-                  deletePost(post._id);
-                  setDeleteConfimation(false);
-                }}>Confirm</button>
+                <button onClick={() => setDeleteConfimation(false)}>
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    deletePost(post._id);
+                    setDeleteConfimation(false);
+                  }}
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </div>
@@ -208,42 +219,59 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
       </div>
 
       <div className="likeComment-wrapper">
-        <div className={`like ${liked && "active"}`} onClick={() => likeDislike(post._id)}>
+        <div
+          className={`like ${liked && "active"}`}
+          onClick={() => likeDislike(post._id)}
+        >
           {/* Correct the fill color logic based on the liked state */}
-          <Like fill={liked ? "red" : "black"} /> {likesCount > 0 && `(${likesCount})`}
+          <Like fill={liked ? "red" : "black"} />{" "}
+          {likesCount > 0 && `(${likesCount})`}
         </div>
-        <div onClick={() => {
-          setShowComments(!showComments);
-          if (!showComments) {
-            fetchComments(); // Fetch comments if showing them
-          }
-        }}>
+        <div
+          onClick={() => {
+            setShowComments(!showComments);
+            if (!showComments) {
+              fetchComments(); // Fetch comments if showing them
+            }
+          }}
+        >
           <Comment /> ({commentCount})
         </div>
       </div>
-
-
+      {/* sowcomments */}
       {/* Comments Section */}
       {showComments && (
         <div className="comments-section">
           <div className="add-comment">
-            <textarea
+            <input
+              type="text"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
             />
-            <button onClick={() => addComment(post._id)}>Post Comment</button>
+            <div className="send" onClick={() => addComment(post._id)}>
+              <Send />
+            </div>
           </div>
 
           {comments.length > 0 ? (
             comments.map((comment) => (
               <div key={comment._id} className="comment">
                 <div className="comment-user">
-                  <img src={comment.userId.profileImage || defaultImage} alt="" />
-                  <p>{comment.userId.fullName}</p>
+                  <div className="img-container">
+                    <img
+                      src={comment.userId.profileImage || defaultImage}
+                      alt=""
+                    />
+                  </div>
+                  <div className="userDetails">
+                    <p>{comment.userId.fullName}</p>
+                    <p className="comment-time">
+                      {formatDistanceToNow(new Date(comment.createdAt))} ago
+                    </p>
+                  </div>
                 </div>
                 <p>{comment.content}</p>
-                <p className="comment-time">{formatDistanceToNow(new Date(comment.createdAt))} ago</p>
               </div>
             ))
           ) : (
@@ -256,3 +284,6 @@ const Post = ({ post, setNav, setSelectedUser, onPostDeleted }) => {
 };
 
 export default Post;
+
+// when user post a comment the posted user profile image and image not showing immediatly only when user refresh the page only it updaating solve that issue after user refresh the user name and imapge updated 
+

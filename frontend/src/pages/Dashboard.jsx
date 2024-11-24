@@ -49,7 +49,7 @@ const Dashboard = () => {
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, []);
 
   // Fetch nearby entities based on user type
   useEffect(() => {
@@ -139,8 +139,8 @@ const Dashboard = () => {
             userPosts={userPosts}
           />
         )}
-        {nav === "profile" && <Profile userData={userData} nearbyEntities={nearbyEntities} />}
         {nav === "explore" && <Explore userData={userData} nearbyEntities={nearbyEntities} />}
+        {nav === "settings" && <Profile userData={userData} nearbyEntities={nearbyEntities} />}
       </div>
     </div>
   );
